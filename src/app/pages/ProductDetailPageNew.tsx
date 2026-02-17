@@ -1,51 +1,56 @@
-'use client'
+"use client";
 
-import { useState } from 'react'
-import { useParams, useRouter } from 'next/navigation'
-import Link from 'next/link'
-import { motion } from 'motion/react'
-import { GlassNavbar } from '@/app/components/GlassNavbar'
-import { GlassFooter } from '@/app/components/GlassFooter'
-import { ShoppingCart, Package, Truck, Settings } from 'lucide-react'
+import { useState } from "react";
+import { useParams, useRouter } from "next/navigation";
+import Link from "next/link";
+import { motion } from "motion/react";
+import { GlassNavbar } from "@/app/components/GlassNavbar";
+import { GlassFooter } from "@/app/components/GlassFooter";
+import { ShoppingCart, Package, Truck, Settings } from "lucide-react";
 
 export default function ProductDetailPage() {
-  const params = useParams()
-  const router = useRouter()
-  const productId = params?.productId as string
-  const [selectedImage, setSelectedImage] = useState(0)
-  const [activeTab, setActiveTab] = useState('description')
+  const params = useParams();
+  const router = useRouter();
+  const productId = params?.productId as string;
+  const [selectedImage, setSelectedImage] = useState(0);
+  const [activeTab, setActiveTab] = useState("description");
 
   // Sample product data
   const product = {
-    id: productId || 'brass-valve-001',
-    name: 'Brass Ball Valve - Quarter Turn',
+    id: productId || "brass-valve-001",
+    name: "Brass Ball Valve - Quarter Turn",
     images: [
-      'https://images.unsplash.com/photo-1611224111800-0eaf3e53aa45?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800',
-      'https://images.unsplash.com/photo-1569062980724-23e1063d8790?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800',
-      'https://images.unsplash.com/photo-1761307234387-d9291985eaf9?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800',
-      'https://images.unsplash.com/photo-1611224111800-0eaf3e53aa45?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800',
+      "https://images.unsplash.com/photo-1611224111800-0eaf3e53aa45?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800",
+      "https://images.unsplash.com/photo-1569062980724-23e1063d8790?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800",
+      "https://images.unsplash.com/photo-1761307234387-d9291985eaf9?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800",
+      "https://images.unsplash.com/photo-1611224111800-0eaf3e53aa45?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800",
     ],
-    material: 'Brass CZ132',
-    finish: 'Chrome Plated / Nickel Plated',
+    material: "Brass CZ132",
+    finish: "Chrome Plated / Nickel Plated",
     size: '1/2", 3/4", 1", 1.5", 2"',
-    moq: '500 Units',
-    hsCode: '84811099',
-    packaging: 'Individual poly bag, 50 pcs per carton',
-    shipping: 'Sea Freight / Air Freight available',
-  }
+    moq: "500 Units",
+    hsCode: "84811099",
+    packaging: "Individual poly bag, 50 pcs per carton",
+    shipping: "Sea Freight / Air Freight available",
+  };
 
   const tabs = [
     {
-      id: 'description',
-      label: 'Description',
+      id: "description",
+      label: "Description",
       icon: Package,
       content: (
         <div className="space-y-4 text-gray-600 leading-relaxed">
           <p>
-            Premium quality brass ball valves manufactured with high-grade brass alloy, designed for industrial and commercial plumbing applications. Features quarter-turn operation for easy on/off control.
+            Premium quality brass ball valves manufactured with high-grade brass
+            alloy, designed for industrial and commercial plumbing applications.
+            Features quarter-turn operation for easy on/off control.
           </p>
           <p>
-            Our brass ball valves are manufactured using precision casting and machining processes, ensuring consistent quality and reliable performance. Each valve undergoes rigorous quality testing before shipment.
+            Our brass ball valves are manufactured using precision casting and
+            machining processes, ensuring consistent quality and reliable
+            performance. Each valve undergoes rigorous quality testing before
+            shipment.
           </p>
           <ul className="list-disc list-inside space-y-2 ml-4">
             <li>Premium brass construction (CZ132 alloy)</li>
@@ -59,13 +64,18 @@ export default function ProductDetailPage() {
       ),
     },
     {
-      id: 'packaging',
-      label: 'Packaging',
+      id: "packaging",
+      label: "Packaging",
       icon: Package,
       content: (
         <div className="space-y-4 text-gray-600 leading-relaxed">
-          <h3 className="text-xl font-bold text-[#0B1F3F]">Packaging Details</h3>
-          <p>Our products are packaged with export-grade materials to ensure safe delivery worldwide.</p>
+          <h3 className="text-xl font-bold text-[#0B1F3F]">
+            Packaging Details
+          </h3>
+          <p>
+            Our products are packaged with export-grade materials to ensure safe
+            delivery worldwide.
+          </p>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="backdrop-blur-xl bg-white/60 border border-white/50 rounded-xl p-6">
               <h4 className="font-bold text-[#0B1F3F] mb-3">Inner Packaging</h4>
@@ -85,20 +95,25 @@ export default function ProductDetailPage() {
             </div>
           </div>
           <p className="text-sm">
-            Custom packaging and branding available for bulk orders. Please contact us for customization options.
+            Custom packaging and branding available for bulk orders. Please
+            contact us for customization options.
           </p>
         </div>
       ),
     },
     {
-      id: 'shipping',
-      label: 'Shipping',
+      id: "shipping",
+      label: "Shipping",
       icon: Truck,
       content: (
         <div className="space-y-4 text-gray-600 leading-relaxed">
-          <h3 className="text-xl font-bold text-[#0B1F3F]">Shipping Information</h3>
+          <h3 className="text-xl font-bold text-[#0B1F3F]">
+            Shipping Information
+          </h3>
           <div className="backdrop-blur-xl bg-white/60 border border-white/50 rounded-xl p-6">
-            <h4 className="font-bold text-[#0B1F3F] mb-4">Available Incoterms</h4>
+            <h4 className="font-bold text-[#0B1F3F] mb-4">
+              Available Incoterms
+            </h4>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div>
                 <div className="font-semibold text-[#3B82F6] mb-2">FOB</div>
@@ -133,24 +148,31 @@ export default function ProductDetailPage() {
             </div>
           </div>
           <p className="text-sm">
-            Lead time: 15-20 days from order confirmation. Expedited production available on request.
+            Lead time: 15-20 days from order confirmation. Expedited production
+            available on request.
           </p>
         </div>
       ),
     },
     {
-      id: 'customization',
-      label: 'Customization',
+      id: "customization",
+      label: "Customization",
       icon: Settings,
       content: (
         <div className="space-y-4 text-gray-600 leading-relaxed">
-          <h3 className="text-xl font-bold text-[#0B1F3F]">Custom OEM Solutions</h3>
+          <h3 className="text-xl font-bold text-[#0B1F3F]">
+            Custom OEM Solutions
+          </h3>
           <p>
-            We offer comprehensive customization options to meet your specific requirements. Our experienced team can work with you to develop custom products tailored to your market needs.
+            We offer comprehensive customization options to meet your specific
+            requirements. Our experienced team can work with you to develop
+            custom products tailored to your market needs.
           </p>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="backdrop-blur-xl bg-white/60 border border-white/50 rounded-xl p-6">
-              <h4 className="font-bold text-[#0B1F3F] mb-3">Available Customizations</h4>
+              <h4 className="font-bold text-[#0B1F3F] mb-3">
+                Available Customizations
+              </h4>
               <ul className="space-y-2">
                 <li>✓ Custom sizes and specifications</li>
                 <li>✓ Different finish options</li>
@@ -170,22 +192,24 @@ export default function ProductDetailPage() {
               </ul>
             </div>
           </div>
-          <div className="backdrop-blur-xl bg-gradient-to-br from-[#3B82F6] to-[#0EA5E9] border border-white/50 rounded-xl p-6 text-white">
+          <div className="backdrop-blur-xl bg-gradient-to-br from-[#3B82F6] to-[#0c1951] border border-white/50 rounded-xl p-6 text-white">
             <p className="mb-4">
-              <strong>MOQ for custom orders:</strong> Typically 1000-2000 units depending on customization complexity
+              <strong>MOQ for custom orders:</strong> Typically 1000-2000 units
+              depending on customization complexity
             </p>
             <p>
-              Contact our team to discuss your custom requirements and receive a detailed quotation.
+              Contact our team to discuss your custom requirements and receive a
+              detailed quotation.
             </p>
           </div>
         </div>
       ),
     },
-  ]
+  ];
 
   const handleRequestQuote = () => {
-    router.push(`/request-quote?product=${encodeURIComponent(product.name)}`)
-  }
+    router.push(`/request-quote?product=${encodeURIComponent(product.name)}`);
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#E0F2FE] via-white to-[#F0F9FF]">
@@ -218,8 +242,8 @@ export default function ProductDetailPage() {
                     onClick={() => setSelectedImage(index)}
                     className={`backdrop-blur-xl border rounded-2xl p-2 transition-all duration-300 ${
                       selectedImage === index
-                        ? 'bg-white/80 border-[#3B82F6] scale-105 shadow-lg'
-                        : 'bg-white/60 border-white/50 hover:bg-white/80 hover:scale-105'
+                        ? "bg-white/80 border-[#3B82F6] scale-105 shadow-lg"
+                        : "bg-white/60 border-white/50 hover:bg-white/80 hover:scale-105"
                     }`}
                   >
                     <img
@@ -246,20 +270,24 @@ export default function ProductDetailPage() {
               {/* Product Specifications */}
               <div className="space-y-5 mb-8">
                 {[
-                  { label: 'Material', value: product.material },
-                  { label: 'Finish', value: product.finish },
-                  { label: 'Size', value: product.size },
-                  { label: 'MOQ', value: product.moq },
-                  { label: 'HS Code', value: product.hsCode },
-                  { label: 'Packaging', value: product.packaging },
-                  { label: 'Shipping', value: product.shipping },
+                  { label: "Material", value: product.material },
+                  { label: "Finish", value: product.finish },
+                  { label: "Size", value: product.size },
+                  { label: "MOQ", value: product.moq },
+                  { label: "HS Code", value: product.hsCode },
+                  { label: "Packaging", value: product.packaging },
+                  { label: "Shipping", value: product.shipping },
                 ].map((spec, index) => (
                   <div
                     key={index}
                     className="flex justify-between items-start pb-5 border-b border-gray-200"
                   >
-                    <span className="font-semibold text-gray-700">{spec.label}:</span>
-                    <span className="text-gray-600 text-right max-w-xs">{spec.value}</span>
+                    <span className="font-semibold text-gray-700">
+                      {spec.label}:
+                    </span>
+                    <span className="text-gray-600 text-right max-w-xs">
+                      {spec.value}
+                    </span>
                   </div>
                 ))}
               </div>
@@ -267,7 +295,7 @@ export default function ProductDetailPage() {
               {/* Request Quote Button */}
               <button
                 onClick={handleRequestQuote}
-                className="w-full px-8 py-4 bg-gradient-to-r from-[#3B82F6] to-[#0EA5E9] text-white rounded-xl font-semibold text-lg hover:shadow-2xl hover:scale-[1.02] transition-all duration-300 flex items-center justify-center gap-2"
+                className="w-full px-8 py-4 bg-gradient-to-r from-[#3B82F6] to-[#0c1951] text-white rounded-xl font-semibold text-lg hover:shadow-2xl hover:scale-[1.02] transition-all duration-300 flex items-center justify-center gap-2"
               >
                 <ShoppingCart className="w-5 h-5" />
                 Request Quote
@@ -290,8 +318,8 @@ export default function ProductDetailPage() {
                   onClick={() => setActiveTab(tab.id)}
                   className={`flex-1 px-6 py-5 font-semibold text-lg transition-all duration-300 flex items-center justify-center gap-2 ${
                     activeTab === tab.id
-                      ? 'bg-gradient-to-br from-[#3B82F6]/10 to-[#0EA5E9]/10 text-[#3B82F6] border-b-4 border-[#3B82F6]'
-                      : 'text-gray-600 hover:bg-white/40'
+                      ? "bg-gradient-to-br from-[#3B82F6]/10 to-[#0c1951]/10 text-[#3B82F6] border-b-4 border-[#3B82F6]"
+                      : "text-gray-600 hover:bg-white/40"
                   }`}
                 >
                   <tab.icon className="w-5 h-5" />
@@ -310,5 +338,5 @@ export default function ProductDetailPage() {
 
       <GlassFooter />
     </div>
-  )
+  );
 }

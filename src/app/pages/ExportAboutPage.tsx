@@ -106,7 +106,7 @@ export function ExportAboutPage() {
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.4, duration: 0.6 }}
             >
-              <div className="backdrop-blur-2xl bg-gradient-to-br from-[#3B82F6] to-[#0EA5E9] border border-white/50 rounded-3xl p-10 shadow-2xl text-white h-full">
+              <div className="backdrop-blur-2xl bg-gradient-to-br from-[#3B82F6] to-[#0c1951] border border-white/50 rounded-3xl p-10 shadow-2xl text-white h-full">
                 <h2 className="text-3xl font-bold mb-6">Our Mission</h2>
                 <div className="space-y-4 leading-relaxed">
                   <p className="text-white/95">
@@ -148,7 +148,7 @@ export function ExportAboutPage() {
                   transition={{ delay: index * 0.1, duration: 0.6 }}
                   className="backdrop-blur-2xl bg-white/60 border border-white/50 rounded-2xl p-8 text-center shadow-xl hover:shadow-2xl hover:-translate-y-2 transition-all duration-300"
                 >
-                  <div className="w-16 h-16 bg-gradient-to-br from-[#3B82F6] to-[#0EA5E9] rounded-xl flex items-center justify-center mx-auto mb-6">
+                  <div className="w-16 h-16 bg-gradient-to-br from-[#3B82F6] to-[#0c1951] rounded-xl flex items-center justify-center mx-auto mb-6">
                     <value.icon className="w-8 h-8 text-white" />
                   </div>
                   <h3 className="text-xl font-bold text-[#0B1F3F] mb-3">
@@ -186,11 +186,11 @@ export function ExportAboutPage() {
                   >
                     {/* Timeline Line */}
                     {index < milestones.length - 1 && (
-                      <div className="absolute left-6 top-14 w-0.5 h-full bg-gradient-to-b from-[#3B82F6] to-[#0EA5E9]" />
+                      <div className="absolute left-6 top-14 w-0.5 h-full bg-gradient-to-b from-[#3B82F6] to-[#0c1951]" />
                     )}
                     
                     {/* Year Badge */}
-                    <div className="relative z-10 w-12 h-12 bg-gradient-to-br from-[#3B82F6] to-[#0EA5E9] rounded-full flex items-center justify-center text-white font-bold flex-shrink-0">
+                    <div className="relative z-10 w-12 h-12 bg-gradient-to-br from-[#3B82F6] to-[#0c1951] rounded-full flex items-center justify-center text-white font-bold flex-shrink-0">
                       {milestone.year.slice(2)}
                     </div>
                     
@@ -236,7 +236,7 @@ export function ExportAboutPage() {
                     transition={{ delay: index * 0.1, duration: 0.6 }}
                     className="text-center"
                   >
-                    <stat.icon className="w-12 h-12 text-[#0EA5E9] mx-auto mb-4" />
+                    <stat.icon className="w-12 h-12 text-white mx-auto mb-4" />
                     <div className="text-4xl font-bold text-white mb-2">
                       {stat.number}
                     </div>

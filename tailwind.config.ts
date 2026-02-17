@@ -5,7 +5,11 @@ const config: Config = {
     './src/**/*.{js,ts,jsx,tsx,mdx}',
   ],
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        'primary-dark': '#0c1951',
+      },
+    },
   },
   plugins: [],
 }

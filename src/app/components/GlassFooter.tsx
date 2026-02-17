@@ -1,150 +1,87 @@
-import Link from 'next/link'
-import { Mail, Phone, MapPin, MessageCircle, Linkedin, Clock } from "lucide-react";
+import Link from "next/link";
+import Image from "next/image";
+import { Mail, Phone, MapPin } from "lucide-react";
 
 export function GlassFooter() {
   return (
-    <footer className="relative mt-20 py-16 px-6 bg-gradient-to-br from-[#0B1F3F] to-[#1E3A5F]">
-      <div className="max-w-7xl mx-auto">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-12">
-          {/* Logo & About */}
+    <footer className="bg-white border-t border-gray-200">
+      <div className="max-w-6xl mx-auto px-6 py-10">
+
+        {/* Main Grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8">
+
+          {/* Logo + About */}
           <div>
-            <Link href="/" className="flex items-center gap-2 mb-6">
-              <div className="w-10 h-10 bg-gradient-to-br from-[#3B82F6] to-[#0EA5E9] rounded-xl flex items-center justify-center text-white font-bold text-lg">
-                A
-              </div>
-              <span className="font-bold text-xl text-white">AvantaSphere</span>
-            </Link>
-            <p className="text-white/80 leading-relaxed mb-6">
-              Your trusted India-based export partner, delivering quality products to UAE, Africa, and Europe.
-            </p>
-            <div className="flex gap-3">
-              <a
-                href="https://wa.me/1234567890"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-10 h-10 backdrop-blur-xl bg-white/10 border border-white/20 rounded-xl flex items-center justify-center text-white hover:bg-white/20 hover:scale-110 transition-all duration-300"
-              >
-                <MessageCircle className="w-5 h-5" />
-              </a>
-              <a
-                href="https://linkedin.com/company/avantasphere"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-10 h-10 backdrop-blur-xl bg-white/10 border border-white/20 rounded-xl flex items-center justify-center text-white hover:bg-white/20 hover:scale-110 transition-all duration-300"
-              >
-                <Linkedin className="w-5 h-5" />
-              </a>
-            </div>
+            <Image
+              src="/AvantaSphere_Logo.png"
+              alt="AvantaSphere"
+              width={180}
+              height={40}
+              className="mb-3"
+            />           
           </div>
 
           {/* Quick Links */}
           <div>
-            <h3 className="text-white font-bold text-lg mb-6">Quick Links</h3>
-            <ul className="space-y-3">
-              {[
-                { name: "Home", path: "/" },
-                { name: "Products", path: "/products" },
-                { name: "Categories", path: "/categories" },
-                { name: "About Us", path: "/about" },
-                { name: "Certifications", path: "/certifications" },
-                { name: "Contact", path: "/contact" },
-              ].map((link) => (
-                <li key={link.path}>
-                  <Link
-                    href={link.path}
-                    className="text-white/80 hover:text-white hover:translate-x-1 inline-block transition-all duration-300"
-                  >
-                    {link.name}
-                  </Link>
-                </li>
-              ))}
+            <h4 className="text-sm font-semibold text-gray-900 mb-3 uppercase">
+              Quick Links
+            </h4>
+            <ul className="space-y-2 text-sm">
+              <li><Link href="/" className="text-gray-600 hover:text-blue-600">Home</Link></li>
+              <li><Link href="/products" className="text-gray-600 hover:text-blue-600">Products</Link></li>
+              <li><Link href="/about" className="text-gray-600 hover:text-blue-600">About Us</Link></li>
+              <li><Link href="/contact" className="text-gray-600 hover:text-blue-600">Contact</Link></li>
             </ul>
           </div>
 
-          {/* Contact Info */}
+          {/* Contact Us */}
           <div>
-            <h3 className="text-white font-bold text-lg mb-6">Contact</h3>
-            <ul className="space-y-4">
-              <li className="flex items-start gap-3">
-                <Mail className="w-5 h-5 text-[#0EA5E9] mt-0.5 flex-shrink-0" />
-                <a
-                  href="mailto:info@avantasphere.com"
-                  className="text-white/80 hover:text-white transition-colors"
-                >
-                  info@avantasphere.com
-                </a>
+            <h4 className="text-sm font-semibold text-gray-900 mb-3 uppercase">
+              Contact Us
+            </h4>
+            <ul className="space-y-2 text-sm text-gray-600">
+              <li className="flex items-start gap-2">
+                <Mail className="w-4 h-4 text-gray-500 mt-0.5" />
+                info@avantasphere.com
               </li>
-              <li className="flex items-start gap-3">
-                <Phone className="w-5 h-5 text-[#0EA5E9] mt-0.5 flex-shrink-0" />
-                <a
-                  href="tel:+911234567890"
-                  className="text-white/80 hover:text-white transition-colors"
-                >
-                  +91 (123) 456-7890
-                </a>
+              <li className="flex items-start gap-2">
+                <Phone className="w-4 h-4 text-gray-500 mt-0.5" />
+                +91 123 456 7890
               </li>
-              <li className="flex items-start gap-3">
-                <MessageCircle className="w-5 h-5 text-[#0EA5E9] mt-0.5 flex-shrink-0" />
-                <a
-                  href="https://wa.me/911234567890"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-white/80 hover:text-white transition-colors"
-                >
-                  WhatsApp: +91 123 456 7890
-                </a>
-              </li>
-              <li className="flex items-start gap-3">
-                <MapPin className="w-5 h-5 text-[#0EA5E9] mt-0.5 flex-shrink-0" />
-                <span className="text-white/80">
-                  Mumbai, Maharashtra, India
-                </span>
+              <li className="flex items-start gap-2">
+                <MapPin className="w-4 h-4 text-gray-500 mt-0.5" />
+                Mumbai, India
               </li>
             </ul>
           </div>
 
-          {/* Business Hours */}
+          {/* Follow Us */}
           <div>
-            <h3 className="text-white font-bold text-lg mb-6">Business Hours</h3>
-            <div className="backdrop-blur-xl bg-white/10 border border-white/20 rounded-2xl p-6">
-              <div className="flex items-center gap-2 mb-4">
-                <Clock className="w-5 h-5 text-[#0EA5E9]" />
-                <span className="text-white font-semibold">IST (India)</span>
-              </div>
-              <ul className="space-y-2 text-sm">
-                <li className="flex justify-between text-white/80">
-                  <span>Mon - Fri</span>
-                  <span className="font-semibold text-white">9:00 AM - 6:00 PM</span>
-                </li>
-                <li className="flex justify-between text-white/80">
-                  <span>Saturday</span>
-                  <span className="font-semibold text-white">10:00 AM - 4:00 PM</span>
-                </li>
-                <li className="flex justify-between text-white/80">
-                  <span>Sunday</span>
-                  <span className="font-semibold text-white">Closed</span>
-                </li>
-              </ul>
-            </div>
-          </div>
-        </div>
-
-        {/* Bottom Bar */}
-        <div className="pt-8 border-t border-white/10">
-          <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-            <p className="text-white/60 text-sm">
-              © 2024 AvantaSphere. All rights reserved.
+            <h4 className="text-sm font-semibold text-gray-900 mb-3 uppercase">
+              Follow Us
+            </h4>
+            <p className="text-sm text-gray-600 mb-2">
+              sales@avantasphere.com
             </p>
-            <div className="flex gap-6 text-sm">
-              <Link href="/privacy" className="text-white/60 hover:text-white transition-colors">
-                Privacy Policy
-              </Link>
-              <Link href="/terms" className="text-white/60 hover:text-white transition-colors">
-                Terms of Service
-              </Link>
+            <div className="flex gap-3">
+              <a href="#" className="w-9 h-9 flex items-center justify-center rounded-full border text-gray-500 hover:text-blue-600 hover:border-blue-600 transition">
+                in
+              </a>
+              <a href="#" className="w-9 h-9 flex items-center justify-center rounded-full border text-gray-500 hover:text-blue-600 hover:border-blue-600 transition">
+                f
+              </a>
+              <a href="#" className="w-9 h-9 flex items-center justify-center rounded-full border text-gray-500 hover:text-blue-600 hover:border-blue-600 transition">
+                x
+              </a>
             </div>
           </div>
         </div>
+
+        {/* Bottom */}
+        <div className="mt-8 pt-4 border-t border-gray-200 text-center text-sm text-gray-500">
+          © 2024 AvantaSphere. All rights reserved.
+        </div>
+
       </div>
     </footer>
   );

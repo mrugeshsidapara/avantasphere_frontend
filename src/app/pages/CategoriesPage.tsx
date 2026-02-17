@@ -12,34 +12,62 @@ export function CategoriesPage() {
     {
       id: "brass-components",
       name: "Brass Components",
-      description: "High-precision brass fittings, valves, and precision components for industrial applications",
-      image: "https://images.unsplash.com/photo-1611224111800-0eaf3e53aa45?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800",
+      description:
+        "High-precision brass fittings, valves, and precision components for industrial applications",
+      image:
+        "https://images.unsplash.com/photo-1611224111800-0eaf3e53aa45?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800",
       productCount: 150,
-      subcategories: ["Brass Valves", "Pipe Fittings", "Industrial Fasteners", "Precision Parts"],
+      subcategories: [
+        "Brass Valves",
+        "Pipe Fittings",
+        "Industrial Fasteners",
+        "Precision Parts",
+      ],
     },
     {
       id: "industrial-hardware",
       name: "Industrial Hardware",
-      description: "Durable hardware solutions for construction and manufacturing sectors",
-      image: "https://images.unsplash.com/photo-1569062980724-23e1063d8790?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800",
+      description:
+        "Durable hardware solutions for construction and manufacturing sectors",
+      image:
+        "https://images.unsplash.com/photo-1569062980724-23e1063d8790?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800",
       productCount: 200,
-      subcategories: ["Hand Tools", "Power Tools", "Construction Hardware", "Safety Equipment"],
+      subcategories: [
+        "Hand Tools",
+        "Power Tools",
+        "Construction Hardware",
+        "Safety Equipment",
+      ],
     },
     {
       id: "custom-oem",
       name: "Custom OEM Manufacturing",
-      description: "Tailored manufacturing and export solutions based on your specific requirements",
-      image: "https://images.unsplash.com/photo-1761307234387-d9291985eaf9?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800",
+      description:
+        "Tailored manufacturing and export solutions based on your specific requirements",
+      image:
+        "https://images.unsplash.com/photo-1761307234387-d9291985eaf9?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800",
       productCount: 100,
-      subcategories: ["Custom Manufacturing", "Private Labeling", "Bulk Orders", "Special Projects"],
+      subcategories: [
+        "Custom Manufacturing",
+        "Private Labeling",
+        "Bulk Orders",
+        "Special Projects",
+      ],
     },
     {
       id: "export-packaging",
       name: "Export Packaging Solutions",
-      description: "Professional export-grade packaging for safe international shipping",
-      image: "https://images.unsplash.com/photo-1611224111800-0eaf3e53aa45?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800",
+      description:
+        "Professional export-grade packaging for safe international shipping",
+      image:
+        "https://images.unsplash.com/photo-1611224111800-0eaf3e53aa45?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800",
       productCount: 80,
-      subcategories: ["Protective Packaging", "Custom Boxes", "Palletization", "Shrink Wrapping"],
+      subcategories: [
+        "Protective Packaging",
+        "Custom Boxes",
+        "Palletization",
+        "Shrink Wrapping",
+      ],
     },
   ];
 
@@ -47,7 +75,9 @@ export function CategoriesPage() {
     (category) =>
       category.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       category.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      category.subcategories.some((sub) => sub.toLowerCase().includes(searchTerm.toLowerCase()))
+      category.subcategories.some((sub) =>
+        sub.toLowerCase().includes(searchTerm.toLowerCase()),
+      ),
   );
 
   return (
@@ -67,7 +97,8 @@ export function CategoriesPage() {
               Product Categories
             </h1>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              Browse our comprehensive range of export products organized by category
+              Browse our comprehensive range of export products organized by
+              category
             </p>
           </motion.div>
 
@@ -82,7 +113,7 @@ export function CategoriesPage() {
               <Search className="absolute left-6 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500" />
               <input
                 type="text"
-                placeholder="Search categories, products, or subcategories..."
+                placeholder="Search categories..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="w-full pl-14 pr-6 py-5 bg-transparent focus:outline-none text-gray-800 placeholder-gray-500"
@@ -91,7 +122,7 @@ export function CategoriesPage() {
           </motion.div>
 
           {/* Categories Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {filteredCategories.map((category, index) => (
               <motion.div
                 key={category.id}
@@ -100,7 +131,7 @@ export function CategoriesPage() {
                 transition={{ delay: index * 0.1, duration: 0.6 }}
               >
                 <Link href={`/categories/${category.id}`}>
-                  <div className="group backdrop-blur-xl bg-white/60 border border-white/50 rounded-3xl overflow-hidden shadow-2xl hover:shadow-3xl hover:-translate-y-2 transition-all duration-300">
+                  <div className="group h-full backdrop-blur-xl bg-white/60 border border-white/50 rounded-3xl overflow-hidden shadow-2xl hover:shadow-3xl hover:-translate-y-2 transition-all duration-300 flex flex-col">
                     {/* Image */}
                     <div className="relative h-64 overflow-hidden">
                       <img
@@ -109,48 +140,41 @@ export function CategoriesPage() {
                         className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-[#0B1F3F]/80 via-[#0B1F3F]/40 to-transparent" />
-                      
+
                       {/* Product Count Badge */}
                       <div className="absolute top-6 right-6 backdrop-blur-xl bg-white/20 border border-white/30 rounded-xl px-4 py-2 text-white">
-                        <span className="font-bold">{category.productCount}</span> Products
+                        <span className="font-bold">
+                          {category.productCount}
+                        </span>{" "}
+                        Products
                       </div>
 
                       {/* Icon */}
                       <div className="absolute bottom-6 left-6">
-                        <div className="w-14 h-14 bg-gradient-to-br from-[#3B82F6] to-[#0EA5E9] rounded-xl flex items-center justify-center">
+                        <div className="w-14 h-14 bg-gradient-to-br from-[#3B82F6] to-[#0c1951] rounded-xl flex items-center justify-center">
                           <Package className="w-7 h-7 text-white" />
                         </div>
                       </div>
                     </div>
 
                     {/* Content */}
-                    <div className="p-8">
-                      <h3 className="text-2xl font-bold text-[#0B1F3F] mb-3 group-hover:text-[#3B82F6] transition-colors">
+                    {/* Content */}
+                    {/* Content */}
+                    <div className="p-8 flex flex-col flex-1">
+                      <h3 className="text-2xl font-bold text-[#0B1F3F] mb-4">
                         {category.name}
                       </h3>
-                      <p className="text-gray-600 mb-6 leading-relaxed">
+
+                      <p className="text-gray-600 leading-relaxed mb-8">
                         {category.description}
                       </p>
 
-                      {/* Subcategories */}
-                      <div className="mb-6">
-                        <h4 className="text-sm font-semibold text-[#0B1F3F] mb-3">Subcategories:</h4>
-                        <div className="flex flex-wrap gap-2">
-                          {category.subcategories.map((sub, i) => (
-                            <span
-                              key={i}
-                              className="px-3 py-1.5 backdrop-blur-xl bg-white/60 border border-white/60 rounded-lg text-sm text-gray-700"
-                            >
-                              {sub}
-                            </span>
-                          ))}
+                      {/* Spacer pushes button to bottom */}
+                      <div className="mt-auto">
+                        <div className="w-full inline-flex items-center justify-center gap-3 px-6 py-3 rounded-xl font-semibold text-white bg-gradient-to-r from-[#3B82F6] to-[#0c1951] hover:shadow-xl hover:scale-[1.02] transition-all duration-300">
+                          Browse Category
+                          <ArrowRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />
                         </div>
-                      </div>
-
-                      {/* Browse Button */}
-                      <div className="flex items-center gap-2 text-[#3B82F6] font-semibold group-hover:gap-3 transition-all">
-                        Browse Category
-                        <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                       </div>
                     </div>
                   </div>
@@ -171,9 +195,7 @@ export function CategoriesPage() {
                 <h3 className="text-2xl font-bold text-[#0B1F3F] mb-2">
                   No categories found
                 </h3>
-                <p className="text-gray-600">
-                  Try adjusting your search terms
-                </p>
+                <p className="text-gray-600">Try adjusting your search terms</p>
               </div>
             </motion.div>
           )}
@@ -191,10 +213,11 @@ export function CategoriesPage() {
                 Need Custom Products?
               </h2>
               <p className="text-lg text-gray-600 mb-6">
-                We offer OEM manufacturing and custom solutions for your specific requirements
+                We offer OEM manufacturing and custom solutions for your
+                specific requirements
               </p>
               <Link href="/request-quote">
-                <button className="px-10 py-4 bg-gradient-to-r from-[#3B82F6] to-[#0EA5E9] text-white rounded-xl font-semibold text-lg hover:shadow-2xl hover:scale-105 transition-all duration-300">
+                <button className="px-10 py-4 bg-gradient-to-r from-[#3B82F6] to-[#0c1951] text-white rounded-xl font-semibold text-lg hover:shadow-2xl hover:scale-105 transition-all duration-300">
                   Request Custom Quote
                 </button>
               </Link>
