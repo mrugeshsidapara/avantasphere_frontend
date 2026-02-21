@@ -1,87 +1,123 @@
 import Link from "next/link";
 import Image from "next/image";
-import { Mail, Phone, MapPin } from "lucide-react";
 
 export function GlassFooter() {
   return (
-    <footer className="bg-white border-t border-gray-200">
-      <div className="max-w-6xl mx-auto px-6 py-10">
+    <footer className="relative bg-white">
+      {/* Subtle navy glass overlay */}
+      <div className="absolute inset-0 bg-gradient-to-b from-blue-50/70 to-white backdrop-blur-md" />
 
+      <div className="relative max-w-7xl mx-auto px-6 py-14">
         {/* Main Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8">
-
-          {/* Logo + About */}
-          <div>
+        <div className="grid grid-cols-1 md:grid-cols-5 gap-10">
+          {/* LEFT — Big Logo + Company Info (NO address) */}
+          <div className="md:col-span-2">
             <Image
               src="/AvantaSphere_Logo.png"
               alt="AvantaSphere"
-              width={180}
-              height={40}
-              className="mb-3"
-            />           
+              width={230}
+              height={60}
+              className="mb-4"
+            />
           </div>
 
-          {/* Quick Links */}
+          {/* Company */}
           <div>
-            <h4 className="text-sm font-semibold text-gray-900 mb-3 uppercase">
-              Quick Links
+            <h4 className="text-sm font-semibold text-slate-900 mb-4 uppercase">
+              Company
             </h4>
-            <ul className="space-y-2 text-sm">
-              <li><Link href="/" className="text-gray-600 hover:text-blue-600">Home</Link></li>
-              <li><Link href="/products" className="text-gray-600 hover:text-blue-600">Products</Link></li>
-              <li><Link href="/about" className="text-gray-600 hover:text-blue-600">About Us</Link></li>
-              <li><Link href="/contact" className="text-gray-600 hover:text-blue-600">Contact</Link></li>
-            </ul>
-          </div>
-
-          {/* Contact Us */}
-          <div>
-            <h4 className="text-sm font-semibold text-gray-900 mb-3 uppercase">
-              Contact Us
-            </h4>
-            <ul className="space-y-2 text-sm text-gray-600">
-              <li className="flex items-start gap-2">
-                <Mail className="w-4 h-4 text-gray-500 mt-0.5" />
-                info@avantasphere.com
+            <ul className="space-y-2 text-sm text-slate-600">
+              <li>
+                <Link href="/about" className="hover:text-blue-700">
+                  About Us
+                </Link>
               </li>
-              <li className="flex items-start gap-2">
-                <Phone className="w-4 h-4 text-gray-500 mt-0.5" />
-                +91 123 456 7890
+              <li>
+                <Link href="/certifications" className="hover:text-blue-700">
+                  Certifications
+                </Link>
               </li>
-              <li className="flex items-start gap-2">
-                <MapPin className="w-4 h-4 text-gray-500 mt-0.5" />
-                Mumbai, India
+              <li>
+                <Link href="/products" className="hover:text-blue-700">
+                  Products
+                </Link>
+              </li>
+              <li>
+                <Link href="/contact" className="hover:text-blue-700">
+                  Contact
+                </Link>
               </li>
             </ul>
           </div>
 
-          {/* Follow Us */}
+          {/* Buyer Info */}
           <div>
-            <h4 className="text-sm font-semibold text-gray-900 mb-3 uppercase">
-              Follow Us
+            <h4 className="text-sm font-semibold text-slate-900 mb-4 uppercase">
+              Buyer Info
             </h4>
-            <p className="text-sm text-gray-600 mb-2">
-              sales@avantasphere.com
-            </p>
-            <div className="flex gap-3">
-              <a href="#" className="w-9 h-9 flex items-center justify-center rounded-full border text-gray-500 hover:text-blue-600 hover:border-blue-600 transition">
-                in
-              </a>
-              <a href="#" className="w-9 h-9 flex items-center justify-center rounded-full border text-gray-500 hover:text-blue-600 hover:border-blue-600 transition">
-                f
-              </a>
-              <a href="#" className="w-9 h-9 flex items-center justify-center rounded-full border text-gray-500 hover:text-blue-600 hover:border-blue-600 transition">
-                x
-              </a>
-            </div>
+            <ul className="space-y-2 text-sm text-slate-600">
+              <li>
+                <Link href="/request-quote" className="hover:text-blue-700">
+                  Request Quote
+                </Link>
+              </li>
+              <li>
+                <Link href="/shipping" className="hover:text-blue-700">
+                  Shipping Info
+                </Link>
+              </li>
+              <li>
+                <Link href="/faq" className="hover:text-blue-700">
+                  FAQ
+                </Link>
+              </li>
+            </ul>
+          </div>
+
+          {/* Legal */}
+          <div>
+            <h4 className="text-sm font-semibold text-slate-900 mb-4 uppercase">
+              Legal
+            </h4>
+            <ul className="space-y-2 text-sm text-slate-600">
+              <li>
+                <Link href="/terms" className="hover:text-blue-700">
+                  Terms of Use
+                </Link>
+              </li>
+              <li>
+                <Link href="/privacy" className="hover:text-blue-700">
+                  Privacy Policy
+                </Link>
+              </li>
+              <li>
+                <Link href="/cookies" className="hover:text-blue-700">
+                  Cookie Policy
+                </Link>
+              </li>
+            </ul>
           </div>
         </div>
 
-        {/* Bottom */}
-        <div className="mt-8 pt-4 border-t border-gray-200 text-center text-sm text-gray-500">
-          © 2024 AvantaSphere. All rights reserved.
-        </div>
+        {/* Bottom Bar */}
+        <div className="mt-12 pt-6 border-t border-slate-200 flex flex-col md:flex-row items-center justify-between gap-4">
+          <p className="text-sm text-slate-500">
+            © {new Date().getFullYear()} AvantaSphere. All rights reserved.
+          </p>
 
+          {/* Social */}
+          <div className="flex gap-5 text-slate-500">
+            <a href="#" className="hover:text-blue-700 transition">
+              LinkedIn
+            </a>
+            <a href="#" className="hover:text-blue-700 transition">
+              Instagram
+            </a>
+            <a href="#" className="hover:text-blue-700 transition">
+              X
+            </a>
+          </div>
+        </div>
       </div>
     </footer>
   );
