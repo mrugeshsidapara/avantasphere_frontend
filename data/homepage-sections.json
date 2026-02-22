@@ -1,0 +1,8 @@
+{
+  "hero": { "enabled": true, "sortOrder": 1 },
+  "categories": { "enabled": true, "sortOrder": 2 },
+  "featuredProducts": { "enabled": true, "sortOrder": 3 },
+  "certifications": { "enabled": true, "sortOrder": 4 },
+  "about": { "enabled": true, "sortOrder": 5 },
+  "contact": { "enabled": true, "sortOrder": 6 }
+}

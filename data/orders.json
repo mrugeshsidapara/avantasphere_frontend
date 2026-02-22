@@ -1,0 +1,13 @@
+[
+  {
+    "id": "order-001",
+    "buyerId": "buyer-1",
+    "status": "processing",
+    "items": [],
+    "totalAmount": 0,
+    "shippingStatus": "pending",
+    "trackingNumber": null,
+    "createdAt": "2024-01-15T00:00:00.000Z",
+    "updatedAt": "2024-01-15T00:00:00.000Z"
+  }
+]

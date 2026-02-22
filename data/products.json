@@ -1,0 +1,26 @@
+[
+  {
+    "id": "brass-valve-001",
+    "categoryId": "brass-components",
+    "name": "Brass Ball Valve - Quarter Turn",
+    "slug": "brass-ball-valve-quarter-turn",
+    "description": "Export-grade brass ball valve designed for industrial, commercial, and OEM applications with reliable sealing and long service life.",
+    "images": [
+      "/uploads/products/brass-valve-001-1.jpg",
+      "/uploads/products/brass-valve-001-2.jpg",
+      "/uploads/products/brass-valve-001-3.jpg"
+    ],
+    "specifications": {
+      "material": "Brass CZ132",
+      "finish": "Chrome Plated / Nickel Plated",
+      "size": "1/2\", 3/4\", 1\", 1.5\", 2\"",
+      "moq": "500 Units",
+      "hsCode": "84811099",
+      "packaging": "Individual poly bag, 50 pcs per carton",
+      "shipping": "Sea Freight / Air Freight available"
+    },
+    "applications": ["Water Systems", "Gas Lines", "Pipelines", "Plumbing", "OEM Use", "Export Projects"],
+    "certificateIds": ["iso9001", "ce"],
+    "sortOrder": 1
+  }
+]

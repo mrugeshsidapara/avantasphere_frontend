@@ -1,0 +1,18 @@
+[
+  {
+    "id": "iso9001",
+    "name": "ISO 9001:2015",
+    "description": "Quality Management System",
+    "image": "/uploads/certificates/iso9001.jpg",
+    "visible": true,
+    "sortOrder": 1
+  },
+  {
+    "id": "ce",
+    "name": "CE Certified",
+    "description": "European Conformity",
+    "image": "/uploads/certificates/ce.jpg",
+    "visible": true,
+    "sortOrder": 2
+  }
+]
