@@ -44,7 +44,6 @@ export function middleware(request: NextRequest) {
     const role = request.cookies.get('user-role')?.value ?? request.headers.get('x-user-role');
     if (role !== 'buyer') {
       const loginUrl = new URL('/login', request.url);
-      loginUrl.searchParams.set('redirect', pathname);
       return NextResponse.redirect(loginUrl);
     }
   }

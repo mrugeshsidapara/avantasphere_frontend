@@ -6,7 +6,12 @@
     "description": "High-precision brass fittings, valves, and precision components for industrial applications",
     "image": "/uploads/categories/brass-components.jpg",
     "productCount": 150,
-    "subcategories": ["Brass Valves", "Pipe Fittings", "Industrial Fasteners", "Precision Parts"],
+    "subcategories": [
+      "Brass Valves",
+      "Pipe Fittings",
+      "Industrial Fasteners",
+      "Precision Parts"
+    ],
     "sortOrder": 1
   },
   {
@@ -16,7 +21,12 @@
     "description": "Durable hardware solutions for construction and manufacturing sectors",
     "image": "/uploads/categories/industrial-hardware.jpg",
     "productCount": 200,
-    "subcategories": ["Hand Tools", "Power Tools", "Construction Hardware", "Safety Equipment"],
+    "subcategories": [
+      "Hand Tools",
+      "Power Tools",
+      "Construction Hardware",
+      "Safety Equipment"
+    ],
     "sortOrder": 2
   },
   {
@@ -26,7 +36,12 @@
     "description": "Tailored manufacturing and export solutions based on your specific requirements",
     "image": "/uploads/categories/custom-oem.jpg",
     "productCount": 100,
-    "subcategories": ["Custom Manufacturing", "Private Labeling", "Bulk Orders", "Special Projects"],
+    "subcategories": [
+      "Custom Manufacturing",
+      "Private Labeling",
+      "Bulk Orders",
+      "Special Projects"
+    ],
     "sortOrder": 3
   },
   {
@@ -36,7 +51,12 @@
     "description": "Professional export-grade packaging for safe international shipping",
     "image": "/uploads/categories/export-packaging.jpg",
     "productCount": 80,
-    "subcategories": ["Protective Packaging", "Custom Boxes", "Palletization", "Shrink Wrapping"],
+    "subcategories": [
+      "Protective Packaging",
+      "Custom Boxes",
+      "Palletization",
+      "Shrink Wrapping"
+    ],
     "sortOrder": 4
   }
 ]

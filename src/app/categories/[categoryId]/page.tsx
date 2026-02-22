@@ -1,7 +1,7 @@
 'use client'
 
-import { CategoriesPage } from '@/app/pages/CategoriesPage'
+import { ProductCategoryPage } from '@/app/pages/ProductCategoryPage'
 
 export default function CategoryPage() {
-  return <CategoriesPage />
+  return <ProductCategoryPage />
 }

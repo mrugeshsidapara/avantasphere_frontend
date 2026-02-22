@@ -4,78 +4,22 @@ import { motion } from "motion/react";
 import { GlassNavbar } from "../components/GlassNavbar";
 import { GlassFooter } from "../components/GlassFooter";
 import { Search, Package, ArrowRight } from "lucide-react";
+import { useCategories } from "@/lib/hooks/use-api";
+
+const PLACEHOLDER_IMAGE =
+  "https://images.unsplash.com/photo-1611224111800-0eaf3e53aa45?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800";
 
 export function CategoriesPage() {
   const [searchTerm, setSearchTerm] = useState("");
+  const { data: categories = [], error, loading } = useCategories();
 
-  const categories = [
-    {
-      id: "brass-components",
-      name: "Brass Components",
-      description:
-        "High-precision brass fittings, valves, and precision components for industrial applications",
-      image:
-        "https://images.unsplash.com/photo-1611224111800-0eaf3e53aa45?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800",
-      productCount: 150,
-      subcategories: [
-        "Brass Valves",
-        "Pipe Fittings",
-        "Industrial Fasteners",
-        "Precision Parts",
-      ],
-    },
-    {
-      id: "industrial-hardware",
-      name: "Industrial Hardware",
-      description:
-        "Durable hardware solutions for construction and manufacturing sectors",
-      image:
-        "https://images.unsplash.com/photo-1569062980724-23e1063d8790?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800",
-      productCount: 200,
-      subcategories: [
-        "Hand Tools",
-        "Power Tools",
-        "Construction Hardware",
-        "Safety Equipment",
-      ],
-    },
-    {
-      id: "custom-oem",
-      name: "Custom OEM Manufacturing",
-      description:
-        "Tailored manufacturing and export solutions based on your specific requirements",
-      image:
-        "https://images.unsplash.com/photo-1761307234387-d9291985eaf9?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800",
-      productCount: 100,
-      subcategories: [
-        "Custom Manufacturing",
-        "Private Labeling",
-        "Bulk Orders",
-        "Special Projects",
-      ],
-    },
-    {
-      id: "export-packaging",
-      name: "Export Packaging Solutions",
-      description:
-        "Professional export-grade packaging for safe international shipping",
-      image:
-        "https://images.unsplash.com/photo-1611224111800-0eaf3e53aa45?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800",
-      productCount: 80,
-      subcategories: [
-        "Protective Packaging",
-        "Custom Boxes",
-        "Palletization",
-        "Shrink Wrapping",
-      ],
-    },
-  ];
-
-  const filteredCategories = categories.filter(
-    (category) =>
-      category.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      category.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      category.subcategories.some((sub) =>
+  const filteredCategories = (
+    Array.isArray(categories) ? categories : []
+  ).filter(
+    (c: { name?: string; description?: string; subcategories?: string[] }) =>
+      (c.name ?? "").toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (c.description ?? "").toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (c.subcategories ?? []).some((sub: string) =>
         sub.toLowerCase().includes(searchTerm.toLowerCase()),
       ),
   );
@@ -85,6 +29,16 @@ export function CategoriesPage() {
       <GlassNavbar />
 
       <div className="pt-32 pb-20 px-6">
+        {error && (
+          <div className="mb-4 rounded-lg bg-red-100 p-4 text-red-700">
+            Failed to load categories: {error}
+          </div>
+        )}
+        {loading && (
+          <div className="mb-8 text-center text-gray-600">
+            Loading categories...
+          </div>
+        )}
         <div className="max-w-7xl mx-auto">
           {/* Header */}
           <motion.div
@@ -109,78 +63,98 @@ export function CategoriesPage() {
             transition={{ delay: 0.2, duration: 0.6 }}
             className="max-w-2xl mx-auto mb-16"
           >
-            <div className="relative backdrop-blur-xl bg-white/60 border border-white/50 rounded-2xl shadow-xl">
-              <Search className="absolute left-6 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500" />
+            <div className="relative backdrop-blur-xl bg-white/60 border border-white/50 rounded-xl shadow-lg">
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
               <input
                 type="text"
                 placeholder="Search categories..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-14 pr-6 py-5 bg-transparent focus:outline-none text-gray-800 placeholder-gray-500"
+                className="w-full pl-10 pr-4 py-3 bg-transparent focus:outline-none text-sm text-gray-800 placeholder-gray-500"
               />
             </div>
           </motion.div>
 
           {/* Categories Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {filteredCategories.map((category, index) => (
-              <motion.div
-                key={category.id}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.1, duration: 0.6 }}
-              >
-                <Link href={`/categories/${category.id}`}>
-                  <div className="group h-full backdrop-blur-xl bg-white/60 border border-white/50 rounded-3xl overflow-hidden shadow-2xl hover:shadow-3xl hover:-translate-y-2 transition-all duration-300 flex flex-col">
-                    {/* Image */}
-                    <div className="relative h-64 overflow-hidden">
-                      <img
-                        src={category.image}
-                        alt={category.name}
-                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-[#0B1F3F]/80 via-[#0B1F3F]/40 to-transparent" />
+            {filteredCategories.map(
+              (
+                category: {
+                  id: string;
+                  name: string;
+                  description: string;
+                  image?: string;
+                  productCount?: number;
+                  subcategories?: string[];
+                },
+                index: number,
+              ) => (
+                <motion.div
+                  key={category.id}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: index * 0.1, duration: 0.6 }}
+                >
+                  <Link href={`/categories/${category.id}`}>
+                    <div className="group h-full backdrop-blur-xl bg-white/60 border border-white/50 rounded-3xl overflow-hidden shadow-2xl hover:shadow-3xl hover:-translate-y-2 transition-all duration-300 flex flex-col">
+                      {/* Image */}
+                      <div className="relative h-64 overflow-hidden">
+                        <img
+                          src={
+                            category.image?.startsWith("http")
+                              ? category.image
+                              : category.image || PLACEHOLDER_IMAGE
+                          }
+                          alt={category.name}
+                          onError={(e) => {
+                            (e.target as HTMLImageElement).src =
+                              PLACEHOLDER_IMAGE;
+                          }}
+                          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-[#0B1F3F]/80 via-[#0B1F3F]/40 to-transparent" />
 
-                      {/* Product Count Badge */}
-                      <div className="absolute top-6 right-6 backdrop-blur-xl bg-white/20 border border-white/30 rounded-xl px-4 py-2 text-white">
-                        <span className="font-bold">
-                          {category.productCount}
-                        </span>{" "}
-                        Products
+                        {/* Product Count Badge */}
+                        <div className="absolute top-6 right-6 backdrop-blur-xl bg-white/20 border border-white/30 rounded-xl px-4 py-2 text-white">
+                          <span className="font-bold">
+                            {category.productCount ?? 0}
+                          </span>{" "}
+                          Products
+                        </div>
+
+                        {/* Icon */}
+                        <div className="absolute bottom-6 left-6">
+                          <div className="w-14 h-14 bg-gradient-to-br from-[#3B82F6] to-[#0c1951] rounded-xl flex items-center justify-center">
+                            <Package className="w-7 h-7 text-white" />
+                          </div>
+                        </div>
                       </div>
 
-                      {/* Icon */}
-                      <div className="absolute bottom-6 left-6">
-                        <div className="w-14 h-14 bg-gradient-to-br from-[#3B82F6] to-[#0c1951] rounded-xl flex items-center justify-center">
-                          <Package className="w-7 h-7 text-white" />
+                      {/* Content */}
+                      {/* Content */}
+                      {/* Content */}
+                      <div className="p-8 flex flex-col flex-1">
+                        <h3 className="text-2xl font-bold text-[#0B1F3F] mb-4">
+                          {category.name}
+                        </h3>
+
+                        <p className="text-gray-600 leading-relaxed mb-8">
+                          {category.description}
+                        </p>
+
+                        {/* Spacer pushes button to bottom */}
+                        <div className="mt-auto">
+                          <div className="w-full inline-flex items-center justify-center gap-3 px-6 py-3 rounded-xl font-semibold text-white bg-gradient-to-r from-[#3B82F6] to-[#0c1951] hover:shadow-xl hover:scale-[1.02] transition-all duration-300">
+                            Browse Category
+                            <ArrowRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />
+                          </div>
                         </div>
                       </div>
                     </div>
-
-                    {/* Content */}
-                    {/* Content */}
-                    {/* Content */}
-                    <div className="p-8 flex flex-col flex-1">
-                      <h3 className="text-2xl font-bold text-[#0B1F3F] mb-4">
-                        {category.name}
-                      </h3>
-
-                      <p className="text-gray-600 leading-relaxed mb-8">
-                        {category.description}
-                      </p>
-
-                      {/* Spacer pushes button to bottom */}
-                      <div className="mt-auto">
-                        <div className="w-full inline-flex items-center justify-center gap-3 px-6 py-3 rounded-xl font-semibold text-white bg-gradient-to-r from-[#3B82F6] to-[#0c1951] hover:shadow-xl hover:scale-[1.02] transition-all duration-300">
-                          Browse Category
-                          <ArrowRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </Link>
-              </motion.div>
-            ))}
+                  </Link>
+                </motion.div>
+              ),
+            )}
           </div>
 
           {/* No Results */}

@@ -1,180 +1,161 @@
-import Link from 'next/link'
-import { usePathname } from 'next/navigation'
+"use client";
+
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { motion } from "motion/react";
-import { Header } from "../components/Header";
-import { Footer } from "../components/Footer";
+import { GlassNavbar } from "../components/GlassNavbar";
+import { GlassFooter } from "../components/GlassFooter";
 import { Button } from "../components/ui/button";
+import { useCategory, useProducts } from "@/lib/hooks/use-api";
+import { Package, Search } from "lucide-react";
+import { useState } from "react";
+
+const PLACEHOLDER_IMG =
+  "https://images.unsplash.com/photo-1611224111800-0eaf3e53aa45?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800";
 
 export function ProductCategoryPage() {
   const pathname = usePathname();
-  const category = pathname.split("/").pop();
+  const categoryId = pathname.split("/").pop() || null;
 
-  const categoryTitles: Record<string, string> = {
-    "brass-components": "Brass Components",
-    "industrial-hardware": "Industrial Hardware",
-    "custom-oem": "Custom OEM Manufacturing",
-    "export-packaging": "Export Packaging Solutions",
-  };
+  const { data: categoryData } = useCategory(categoryId);
+  const { data: productsData, loading, error } = useProducts(categoryId);
 
-  const categoryDescriptions: Record<string, string> = {
-    "brass-components": "Premium quality brass fittings, valves, and precision components for industrial and commercial applications",
-    "industrial-hardware": "Durable hardware solutions including fasteners, connectors, and industrial fittings",
-    "custom-oem": "Tailored manufacturing solutions designed to meet your specific requirements and standards",
-    "export-packaging": "Professional packaging solutions designed for secure international shipping and compliance",
-  };
+  const category = categoryData as {
+    name?: string;
+    description?: string;
+  } | null;
+  const products = Array.isArray(productsData) ? productsData : [];
 
-  // Mock product data
-  const products = [
-    {
-      id: "1",
-      name: "Brass Ball Valve",
-      image: "https://images.unsplash.com/photo-1727292485821-f2feb8baa7ce?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=400",
-      description: "High-quality brass ball valve for industrial use",
-    },
-    {
-      id: "2",
-      name: "Brass Check Valve",
-      image: "https://images.unsplash.com/photo-1727292485821-f2feb8baa7ce?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=400",
-      description: "Precision-engineered check valve",
-    },
-    {
-      id: "3",
-      name: "Brass Connector",
-      image: "https://images.unsplash.com/photo-1727292485821-f2feb8baa7ce?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=400",
-      description: "Durable brass connector for various applications",
-    },
-    {
-      id: "4",
-      name: "Brass Elbow Fitting",
-      image: "https://images.unsplash.com/photo-1727292485821-f2feb8baa7ce?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=400",
-      description: "90-degree brass elbow fitting",
-    },
-    {
-      id: "5",
-      name: "Brass Tee Junction",
-      image: "https://images.unsplash.com/photo-1727292485821-f2feb8baa7ce?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=400",
-      description: "T-junction brass fitting",
-    },
-    {
-      id: "6",
-      name: "Brass Adapter",
-      image: "https://images.unsplash.com/photo-1727292485821-f2feb8baa7ce?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=400",
-      description: "Multi-purpose brass adapter",
-    },
-    {
-      id: "7",
-      name: "Brass Coupling",
-      image: "https://images.unsplash.com/photo-1727292485821-f2feb8baa7ce?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=400",
-      description: "Heavy-duty brass coupling",
-    },
-    {
-      id: "8",
-      name: "Brass Nipple",
-      image: "https://images.unsplash.com/photo-1727292485821-f2feb8baa7ce?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=400",
-      description: "Threaded brass nipple fitting",
-    },
-  ];
+  // ✅ NEW: search state
+  const [search, setSearch] = useState("");
 
-  const fadeInUp = {
-    initial: { opacity: 0, y: 20 },
-    whileInView: { opacity: 1, y: 0 },
-    viewport: { once: true },
-    transition: { duration: 0.5 },
-  };
+  // ✅ NEW: filtered list
+  const filteredProducts =
+    products.length > 10
+      ? products.filter((p: any) =>
+          (p.name ?? "").toLowerCase().includes(search.toLowerCase()),
+        )
+      : products;
 
   return (
-    <div className="min-h-screen bg-white">
-      <Header />
+    <div className="min-h-screen bg-gradient-to-br from-[#E0F2FE] via-white to-[#F0F9FF]">
+      <GlassNavbar />
 
-      {/* Hero Section */}
-      <section className="bg-gradient-to-br from-[#E0F2FE] to-white py-16">
-        <div className="max-w-[1440px] mx-auto px-8">
+      <div className="pt-32 pb-20 px-6">
+        <div className="max-w-7xl mx-auto">
+          {/* ✅ CENTERED HEADER */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
+            transition={{ duration: 0.6 }}
+            className="text-center mb-16"
           >
-            <div className="text-sm text-gray-600 mb-4">
-              <Link href="/" className="hover:text-[#3B82F6]">Home</Link>
-              <span className="mx-2">/</span>
-              <span>Products</span>
-              <span className="mx-2">/</span>
-              <span className="text-[#0B1F3F] font-medium">
-                {categoryTitles[category || ""] || "Products"}
-              </span>
-            </div>
-            <h1 className="text-5xl font-semibold text-[#0B1F3F] mb-6">
-              {categoryTitles[category || ""] || "Products"}
+            <h1 className="text-5xl md:text-6xl font-bold text-[#0B1F3F] mb-4">
+              {category?.name || "Products"}
             </h1>
-            <p className="text-lg text-gray-600 max-w-3xl">
-              {categoryDescriptions[category || ""] || "Browse our product catalog"}
+
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+              {category?.description ||
+                "Browse our export-ready product catalog"}
             </p>
           </motion.div>
-        </div>
-      </section>
 
-      {/* Products Grid */}
-      <section className="py-16">
-        <div className="max-w-[1440px] mx-auto px-8">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {products.map((product, index) => (
-              <motion.div
-                key={product.id}
-                {...fadeInUp}
-                transition={{ delay: index * 0.05 }}
-              >
-                <Link href={`/products/${category}/${product.id}`}>
-                  <div className="group bg-white rounded-xl border border-gray-200 overflow-hidden hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
-                    <div className="aspect-square overflow-hidden bg-gray-100">
-                      <div className="w-full h-full bg-gradient-to-br from-gray-200 to-gray-300 flex items-center justify-center">
-                        <span className="text-gray-400 text-sm">Product Image</span>
+          {/* ✅ SEARCH (only if products > 10) */}
+          {products.length > 10 && (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.15, duration: 0.6 }}
+              className="max-w-2xl mx-auto mb-16"
+            >
+              <div className="relative backdrop-blur-xl bg-white/60 border border-white/50 rounded-xl shadow-lg">
+                <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
+                <input
+                  type="text"
+                  placeholder="Search products in this category..."
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                  className="w-full pl-10 pr-4 py-3 bg-transparent focus:outline-none text-sm text-gray-800 placeholder-gray-500"
+                />
+              </div>
+            </motion.div>
+          )}
+
+          {error && (
+            <div className="mb-6 rounded-xl bg-red-100 p-4 text-red-700">
+              {error}
+            </div>
+          )}
+
+          {loading && (
+            <div className="text-center py-16 text-gray-600">
+              Loading products...
+            </div>
+          )}
+
+          {/* PRODUCT GRID */}
+          {!loading && filteredProducts.length > 0 && (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {filteredProducts.map((product: any, index: number) => (
+                <motion.div
+                  key={product.id}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: index * 0.08, duration: 0.6 }}
+                  className="group h-full backdrop-blur-2xl bg-white/60 border border-white/50 rounded-3xl overflow-hidden shadow-2xl hover:-translate-y-2 transition-all duration-300 flex flex-col"
+                >
+                  <div className="relative h-48 overflow-hidden">
+                    <img
+                      src={
+                        product.images?.[0]?.startsWith("http")
+                          ? product.images[0]
+                          : PLACEHOLDER_IMG
+                      }
+                      alt={product.name ?? "Product"}
+                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                      onError={(e) => {
+                        (e.target as HTMLImageElement).src = PLACEHOLDER_IMG;
+                      }}
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-[#0B1F3F]/60 to-transparent" />
+                    <div className="absolute bottom-6 left-6">
+                      <div className="w-14 h-14 bg-gradient-to-br from-[#3B82F6] to-[#0c1951] rounded-xl flex items-center justify-center">
+                        <Package className="w-7 h-7 text-white" />
                       </div>
                     </div>
-                    <div className="p-6">
-                      <h3 className="text-lg font-semibold text-[#0B1F3F] mb-2">
-                        {product.name}
-                      </h3>
-                      <p className="text-sm text-gray-600 mb-4">
-                        {product.description}
-                      </p>
-                      <Button
-                        className="w-full bg-[#3B82F6] hover:bg-[#2563EB] text-white"
-                        onClick={(e) => {
-                          e.preventDefault();
-                          window.location.href = "/request-quote";
-                        }}
-                      >
-                        Request Quote
-                      </Button>
+                  </div>
+
+                  <div className="p-6 flex flex-col flex-1">
+                    <h3 className="text-xl font-bold text-[#0B1F3F] mb-2">
+                      {product.name ?? "Product"}
+                    </h3>
+
+                    <p className="text-gray-600 text-sm mb-6 line-clamp-3">
+                      {product.description ?? ""}
+                    </p>
+
+                    <div className="mt-auto">
+                      <Link href={`/products/${product.id}`}>
+                        <Button className="w-full bg-gradient-to-r from-[#3B82F6] to-[#0c1951] text-white rounded-xl py-3 hover:scale-[1.02] transition-all">
+                          View Details
+                        </Button>
+                      </Link>
                     </div>
                   </div>
-                </Link>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
+                </motion.div>
+              ))}
+            </div>
+          )}
 
-      {/* CTA Section */}
-      <section className="py-16 bg-gray-50">
-        <div className="max-w-[1440px] mx-auto px-8 text-center">
-          <motion.div {...fadeInUp}>
-            <h2 className="text-3xl font-semibold text-[#0B1F3F] mb-4">
-              Need Custom Products?
-            </h2>
-            <p className="text-lg text-gray-600 mb-8 max-w-2xl mx-auto">
-              We offer custom manufacturing solutions tailored to your specific requirements.
-            </p>
-            <Link href="/request-quote">
-              <Button className="bg-[#3B82F6] hover:bg-[#2563EB] text-white px-8 py-6">
-                Get a Custom Quote
-              </Button>
-            </Link>
-          </motion.div>
+          {!loading && filteredProducts.length === 0 && (
+            <div className="text-center py-16 text-gray-600">
+              No products found.
+            </div>
+          )}
         </div>
-      </section>
+      </div>
 
-      <Footer />
+      <GlassFooter />
     </div>
   );
 }

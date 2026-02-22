@@ -2,36 +2,47 @@
 
 import { useState } from "react";
 import { useParams, useRouter } from "next/navigation";
-import Link from "next/link";
 import { motion } from "motion/react";
 import { GlassNavbar } from "@/app/components/GlassNavbar";
 import { GlassFooter } from "@/app/components/GlassFooter";
 import { ShoppingCart, Package, Truck, Settings } from "lucide-react";
+import { useProduct } from "@/lib/hooks/use-api";
+
+const PLACEHOLDER_IMG =
+  "https://images.unsplash.com/photo-1611224111800-0eaf3e53aa45?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800";
 
 export function ProductDetailPage() {
   const params = useParams();
   const router = useRouter();
-  const productId = params?.productId as string;
+  const productId = (params?.productId as string) ?? "";
   const [selectedImage, setSelectedImage] = useState(0);
   const [activeTab, setActiveTab] = useState("description");
 
-  // Sample product data
+  const { data: productData, error, loading } = useProduct(productId || null);
+  const raw = productData as {
+    id?: string;
+    name?: string;
+    description?: string;
+    images?: string[];
+    specifications?: Record<string, string>;
+    applications?: string[];
+  } | null;
+
+  const images = raw?.images?.length ? raw.images : [PLACEHOLDER_IMG];
+  const specs = raw?.specifications ?? {};
   const product = {
-    id: productId || "brass-valve-001",
-    name: "Brass Ball Valve - Quarter Turn",
-    images: [
-      "https://images.unsplash.com/photo-1611224111800-0eaf3e53aa45?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800",
-      "https://images.unsplash.com/photo-1569062980724-23e1063d8790?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800",
-      "https://images.unsplash.com/photo-1761307234387-d9291985eaf9?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800",
-      "https://images.unsplash.com/photo-1611224111800-0eaf3e53aa45?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800",
-    ],
-    material: "Brass CZ132",
-    finish: "Chrome Plated / Nickel Plated",
-    size: '1/2", 3/4", 1", 1.5", 2"',
-    moq: "500 Units",
-    hsCode: "84811099",
-    packaging: "Individual poly bag, 50 pcs per carton",
-    shipping: "Sea Freight / Air Freight available",
+    id: raw?.id ?? productId,
+    name: raw?.name ?? "Product",
+    description: raw?.description ?? "",
+    images,
+    material: specs.material ?? "-",
+    finish: specs.finish ?? "-",
+    size: specs.size ?? "-",
+    moq: specs.moq ?? "-",
+    hsCode: specs.hsCode ?? "-",
+    packaging: specs.packaging ?? "-",
+    shipping: specs.shipping ?? "-",
+    applications: raw?.applications ?? [],
   };
 
   const tabs = [
@@ -41,26 +52,30 @@ export function ProductDetailPage() {
       icon: Package,
       content: (
         <div className="space-y-10">
-          {/* ONE-LINE SUMMARY */}
           <p className="text-gray-600 text-base">
-            Export-grade brass ball valve designed for industrial, commercial,
-            and OEM applications with reliable sealing and long service life.
+            {product.description ||
+              "Export-grade product designed for industrial, commercial, and OEM applications."}
           </p>
 
-          {/* QUICK USE + WHY (SIDE BY SIDE) */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* APPLICATIONS */}
             <div className="rounded-2xl bg-white/70 border border-white/50 p-6">
               <h3 className="font-semibold text-[#0B1F3F] mb-4 flex items-center gap-2">
                 🏭 Applications
               </h3>
               <div className="grid grid-cols-2 gap-3 text-sm text-gray-700">
-                <div>• Water Systems</div>
-                <div>• Gas Lines</div>
-                <div>• Pipelines</div>
-                <div>• Plumbing</div>
-                <div>• OEM Use</div>
-                <div>• Export Projects</div>
+                {(product.applications.length
+                  ? product.applications
+                  : [
+                      "Water Systems",
+                      "Gas Lines",
+                      "Pipelines",
+                      "Plumbing",
+                      "OEM Use",
+                      "Export Projects",
+                    ]
+                ).map((a, i) => (
+                  <div key={i}>• {a}</div>
+                ))}
               </div>
             </div>
 
@@ -94,7 +109,7 @@ export function ProductDetailPage() {
                 <h4 className="font-semibold text-[#0B1F3F] mb-2 flex items-center gap-2">
                   📦 Ordering
                 </h4>
-                <div>• MOQ: 500 units</div>
+                <div>• MOQ: {product.moq}</div>
                 <div>• Lead time: 15–20 days</div>
                 <div>• Samples available</div>
               </div>
@@ -297,6 +312,36 @@ export function ProductDetailPage() {
     router.push(`/request-quote?product=${encodeURIComponent(product.name)}`);
   };
 
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-[#E0F2FE] via-white to-[#F0F9FF]">
+        <GlassNavbar />
+        <div className="pt-32 pb-20 px-6 text-center text-gray-600">
+          Loading product...
+        </div>
+        <GlassFooter />
+      </div>
+    );
+  }
+
+  if (error || !raw) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-[#E0F2FE] via-white to-[#F0F9FF]">
+        <GlassNavbar />
+        <div className="pt-32 pb-20 px-6 text-center">
+          <p className="text-red-600">{error || "Product not found"}</p>
+          <button
+            onClick={() => router.push("/products")}
+            className="mt-4 text-blue-600 underline"
+          >
+            Back to products
+          </button>
+        </div>
+        <GlassFooter />
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#E0F2FE] via-white to-[#F0F9FF]">
       <GlassNavbar />
@@ -314,9 +359,16 @@ export function ProductDetailPage() {
               {/* Main Image */}
               <div className="backdrop-blur-xl bg-white/60 border border-white/50 rounded-3xl p-6 mb-6 shadow-2xl">
                 <img
-                  src={product.images[selectedImage]}
+                  src={
+                    product.images[selectedImage]?.startsWith("http")
+                      ? product.images[selectedImage]
+                      : product.images[selectedImage] || PLACEHOLDER_IMG
+                  }
                   alt={product.name}
                   className="w-full h-[500px] object-cover rounded-2xl"
+                  onError={(e) => {
+                    (e.target as HTMLImageElement).src = PLACEHOLDER_IMG;
+                  }}
                 />
               </div>
 
@@ -333,9 +385,16 @@ export function ProductDetailPage() {
                     }`}
                   >
                     <img
-                      src={image}
+                      src={
+                        image?.startsWith("http")
+                          ? image
+                          : image || PLACEHOLDER_IMG
+                      }
                       alt={`${product.name} ${index + 1}`}
                       className="w-full h-20 object-cover rounded-xl"
+                      onError={(e) => {
+                        (e.target as HTMLImageElement).src = PLACEHOLDER_IMG;
+                      }}
                     />
                   </button>
                 ))}
