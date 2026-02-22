@@ -1,8 +1,8 @@
-import { NextResponse } from 'next/server';
-import type { NextRequest } from 'next/server';
+import { NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
 
-const BUYER_PATHS = ['/buyer'];
-const ADMIN_PATHS = ['/admin'];
+const BUYER_PATHS = ["/buyer"];
+const ADMIN_PATHS = ["/admin"];
 
 function isBuyerPath(pathname: string) {
   return BUYER_PATHS.some((p) => pathname.startsWith(p));
@@ -13,38 +13,49 @@ function isAdminPath(pathname: string) {
 }
 
 function isAdminLogin(pathname: string) {
-  return pathname === '/admin/login';
+  return pathname === "/admin/login";
+}
+
+function isBuyerLogin(pathname: string) {
+  return pathname === "/buyer/login";
 }
 
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  // Skip API, static, and auth routes
-  if (pathname.startsWith('/api') || pathname.startsWith('/_next') || pathname.startsWith('/uploads')) {
+  // Skip API & static files
+  if (
+    pathname.startsWith("/api") ||
+    pathname.startsWith("/_next") ||
+    pathname.startsWith("/uploads")
+  ) {
     return NextResponse.next();
   }
 
-  // Admin login page - allow
-  if (isAdminLogin(pathname)) {
+  // Allow login pages
+  if (isAdminLogin(pathname) || isBuyerLogin(pathname)) {
     return NextResponse.next();
   }
 
-  // Admin routes - check cookie/header for admin session
-  // In production: validate JWT/session from cookie
+  // Admin routes
   if (isAdminPath(pathname)) {
-    const role = request.cookies.get('user-role')?.value ?? request.headers.get('x-user-role');
-    if (role !== 'admin') {
-      const loginUrl = new URL('/admin/login', request.url);
-      return NextResponse.redirect(loginUrl);
+    const role =
+      request.cookies.get("user-role")?.value ??
+      request.headers.get("x-user-role");
+
+    if (role !== "admin") {
+      return NextResponse.redirect(new URL("/admin/login", request.url));
     }
   }
 
-  // Buyer routes - require auth
+  // Buyer routes
   if (isBuyerPath(pathname)) {
-    const role = request.cookies.get('user-role')?.value ?? request.headers.get('x-user-role');
-    if (role !== 'buyer') {
-      const loginUrl = new URL('/login', request.url);
-      return NextResponse.redirect(loginUrl);
+    const role =
+      request.cookies.get("user-role")?.value ??
+      request.headers.get("x-user-role");
+
+    if (role !== "buyer") {
+      return NextResponse.redirect(new URL("/buyer/login", request.url));
     }
   }
 
@@ -52,5 +63,5 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/buyer/:path*', '/admin/:path*'],
+  matcher: ["/buyer/:path*", "/admin/:path*"],
 };

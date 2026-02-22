@@ -16,19 +16,17 @@ interface LoginResponse {
   token: string;
 }
 
-const ADMIN_FEATURES = [
-  { icon: "📊", label: "Dashboard", desc: "View analytics & stats" },
-  { icon: "📂", label: "Categories", desc: "Manage categories" },
-  { icon: "📦", label: "Products", desc: "Manage product catalog" },
-  { icon: "👥", label: "Buyers", desc: "Manage buyer accounts" },
-  { icon: "🛍️", label: "Orders", desc: "Process orders" },
-  { icon: "📋", label: "Inquiries", desc: "Handle inquiries" },
-  { icon: "🎖️", label: "Certifications", desc: "Manage certs" },
-  { icon: "🏠", label: "Homepage", desc: "Control sections" },
-  { icon: "🚚", label: "Tracking", desc: "Update shipments" },
+const BUYER_FEATURES = [
+  { icon: "📊", label: "Dashboard", desc: "View activities & stats" },
+  { icon: "💬", label: "Inquiries", desc: "Request quotations" },
+  { icon: "🛍️", label: "Track Orders", desc: "Monitor purchases" },
+  { icon: "🚚", label: "Shipping Status", desc: "Real-time tracking" },
+  { icon: "📥", label: "Documents", desc: "Download PDFs" },
+  { icon: "📋", label: "Invoices", desc: "Payment records" },
+  { icon: "👤", label: "Profile", desc: "Account settings" },
 ];
 
-export default function AdminLoginPage() {
+export default function BuyerLoginPage() {
   const router = useRouter();
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -47,8 +45,8 @@ export default function AdminLoginPage() {
       const { data, error: err } = await api.post<LoginResponse>(
         "/api/auth/login",
         {
-          email: STATIC_CREDENTIALS.admin.email,
-          password: STATIC_CREDENTIALS.admin.password,
+          email: STATIC_CREDENTIALS.buyer.email,
+          password: STATIC_CREDENTIALS.buyer.password,
         },
       );
 
@@ -58,12 +56,12 @@ export default function AdminLoginPage() {
         return;
       }
 
-      if (data?.user?.role === "admin") {
+      if (data?.user?.role === "buyer") {
         setTimeout(() => {
-          router.push("/admin");
+          router.push("/buyer/dashboard");
         }, 300);
       } else {
-        setError("Account type mismatch. Please use the buyer portal.");
+        setError("Account type mismatch. Please use the admin portal.");
         setLoading(false);
       }
     } catch (err) {
@@ -75,37 +73,37 @@ export default function AdminLoginPage() {
   if (!isMounted) return null;
 
   return (
-    <main className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-slate-50">
+    <main className="min-h-screen bg-gradient-to-br from-green-50 via-white to-blue-50">
       <div className="lg:grid lg:grid-cols-2 lg:gap-0 h-screen">
         {/* Left Side - Features (Desktop Only) */}
-        <div className="hidden lg:flex flex-col justify-center px-12 py-12 bg-gradient-to-br from-blue-600 to-indigo-600 text-white">
+        <div className="hidden lg:flex flex-col justify-center px-12 py-12 bg-gradient-to-br from-green-600 to-emerald-600 text-white">
           <div className="mb-12">
-            <h2 className="text-4xl font-bold mb-4">Admin Panel</h2>
-            <p className="text-blue-100 text-lg">
-              Complete control over your platform and operations.
+            <h2 className="text-4xl font-bold mb-4">Buyer Portal</h2>
+            <p className="text-green-100 text-lg">
+              Access all your orders, inquiries, and documents in one place.
             </p>
           </div>
 
-          <div className="grid grid-cols-3 gap-4">
-            {ADMIN_FEATURES.map((feature) => (
+          <div className="grid grid-cols-2 gap-6">
+            {BUYER_FEATURES.map((feature) => (
               <div
                 key={feature.label}
-                className="bg-white/10 backdrop-blur rounded-lg p-3 border border-white/20"
+                className="bg-white/10 backdrop-blur rounded-lg p-4 border border-white/20"
               >
                 <div className="text-2xl mb-2">{feature.icon}</div>
-                <h3 className="font-semibold text-white text-sm mb-1">
+                <h3 className="font-semibold text-white mb-1">
                   {feature.label}
                 </h3>
-                <p className="text-xs text-blue-100">{feature.desc}</p>
+                <p className="text-sm text-green-100">{feature.desc}</p>
               </div>
             ))}
           </div>
 
-          {/* Security Note */}
-          <div className="mt-12 p-4 bg-blue-500/20 rounded-lg border border-blue-300/50">
-            <p className="text-sm text-blue-50">
-              <span className="font-semibold">🔒 Secure Login:</span> Keep your
-              credentials confidential. Admin-only access.
+          {/* Registration Note */}
+          <div className="mt-12 p-4 bg-green-500/20 rounded-lg border border-green-300/50">
+            <p className="text-sm text-green-50">
+              <span className="font-semibold">📝 Note:</span> Registration
+              required before submitting inquiries
             </p>
           </div>
         </div>
@@ -115,23 +113,23 @@ export default function AdminLoginPage() {
           <div className="w-full max-w-md">
             {/* Mobile Header */}
             <div className="lg:hidden text-center mb-8">
-              <div className="inline-block p-4 bg-blue-100 rounded-full mb-4">
-                <span className="text-5xl">👤</span>
+              <div className="inline-block p-4 bg-green-100 rounded-full mb-4">
+                <span className="text-5xl">🛒</span>
               </div>
               <h1 className="text-3xl sm:text-4xl font-bold text-gray-900">
-                Admin Portal
+                Buyer Portal
               </h1>
               <p className="text-gray-600 text-sm mt-2">
-                Manage platform & operations
+                Access your inquiries, orders & more
               </p>
             </div>
 
             {/* Desktop Header */}
             <div className="hidden lg:block text-center mb-8">
               <h2 className="text-3xl font-bold text-gray-900 mb-2">
-                Welcome Admin
+                Welcome Back
               </h2>
-              <p className="text-gray-600">Sign in to your admin account</p>
+              <p className="text-gray-600">Sign in to your account</p>
             </div>
 
             {/* Login Card */}
@@ -145,7 +143,7 @@ export default function AdminLoginPage() {
 
               {/* Static Form */}
               <form onSubmit={handleSubmit} className="space-y-6">
-                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                <div className="bg-green-50 border border-green-200 rounded-lg p-4">
                   <p className="text-xs text-gray-600 mb-2 font-semibold">
                     Demo Credentials (Read-Only):
                   </p>
@@ -156,9 +154,9 @@ export default function AdminLoginPage() {
                       </label>
                       <input
                         type="email"
-                        value={STATIC_CREDENTIALS.admin.email}
+                        value={STATIC_CREDENTIALS.buyer.email}
                         disabled
-                        className="w-full px-4 py-2 rounded-lg border-2 border-blue-300 bg-white text-gray-900 font-mono text-sm"
+                        className="w-full px-4 py-2 rounded-lg border-2 border-green-300 bg-white text-gray-900 font-mono text-sm"
                       />
                     </div>
                     <div>
@@ -167,9 +165,9 @@ export default function AdminLoginPage() {
                       </label>
                       <input
                         type="password"
-                        value={STATIC_CREDENTIALS.admin.password}
+                        value={STATIC_CREDENTIALS.buyer.password}
                         disabled
-                        className="w-full px-4 py-2 rounded-lg border-2 border-blue-300 bg-white text-gray-900 font-mono text-sm"
+                        className="w-full px-4 py-2 rounded-lg border-2 border-green-300 bg-white text-gray-900 font-mono text-sm"
                       />
                     </div>
                   </div>
@@ -179,7 +177,7 @@ export default function AdminLoginPage() {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 disabled:from-gray-400 disabled:to-gray-400 text-white font-semibold py-3 px-4 rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl disabled:cursor-not-allowed"
+                  className="w-full bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 disabled:from-gray-400 disabled:to-gray-400 text-white font-semibold py-3 px-4 rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl disabled:cursor-not-allowed"
                 >
                   {loading ? (
                     <span className="flex items-center justify-center">
@@ -211,23 +209,36 @@ export default function AdminLoginPage() {
                 </button>
               </form>
 
-              {/* Back Link */}
-              <div className="mt-6 pt-6 border-t border-gray-200 text-center">
-                <Link
-                  href="/login"
-                  className="text-sm text-gray-500 hover:text-gray-700 font-medium"
-                >
-                  ← Back to role selection
-                </Link>
+              {/* Register & Back Links */}
+              <div className="mt-6 pt-6 border-t border-gray-200 space-y-3 text-center text-sm">
+                <div>
+                  <p className="text-gray-600">
+                    New to Avantasphere?{" "}
+                    <Link
+                      href="/register"
+                      className="text-green-600 hover:text-green-700 font-semibold"
+                    >
+                      Register here
+                    </Link>
+                  </p>
+                </div>
+                <div>
+                  <Link
+                    href="/login"
+                    className="text-gray-500 hover:text-gray-700 font-medium"
+                  >
+                    ← Back to role selection
+                  </Link>
+                </div>
               </div>
             </div>
 
             {/* Mobile Features */}
-            <div className="lg:hidden mt-8 grid grid-cols-3 gap-2">
-              {ADMIN_FEATURES.map((feature) => (
+            <div className="lg:hidden mt-8 grid grid-cols-2 gap-3">
+              {BUYER_FEATURES.map((feature) => (
                 <div
                   key={feature.label}
-                  className="text-center p-2 bg-white rounded-lg border border-gray-200"
+                  className="text-center p-3 bg-white rounded-lg border border-gray-200"
                 >
                   <div className="text-2xl mb-1">{feature.icon}</div>
                   <p className="text-xs font-medium text-gray-900">
