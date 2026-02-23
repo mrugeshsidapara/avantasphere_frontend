@@ -1,185 +1,129 @@
 "use client";
 
-import { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { STATIC_CREDENTIALS } from "@/lib/constants/auth";
+import { ShieldCheck, ShoppingBag, ArrowRight } from "lucide-react";
 
 export default function LoginPage() {
   return (
-    <main className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900">
-      {/* Animated Background */}
-      <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute -top-1/2 -right-1/2 w-full h-full bg-blue-500/30 rounded-full blur-3xl opacity-50"></div>
-        <div className="absolute -bottom-1/2 -left-1/2 w-full h-full bg-green-500/30 rounded-full blur-3xl opacity-50"></div>
-      </div>
-
-      <div className="relative z-10 flex items-center justify-center min-h-screen px-4 py-12 sm:py-0">
-        <div className="w-full max-w-5xl">
-          {/* Header */}
-          <div className="text-center mb-16 sm:mb-20">
-            <h1 className="text-5xl sm:text-6xl font-bold text-white mb-3">
-              Avantasphere
-            </h1>
-            <p className="text-xl text-blue-100 mb-2">
-              Your Partner in Global Trade
-            </p>
-            <p className="text-gray-300 text-sm sm:text-base">
-              Select your role to access the platform
-            </p>
+    <main className="min-h-screen bg-gray-50 flex items-center justify-center px-4">
+      <div className="w-full max-w-4xl">
+        {/* Logo Header */}
+        <div className="text-center mb-8">
+          <div className="flex justify-center mb-2">
+            <Image
+              src="/AvantaSphere_Logo.png"
+              alt="Avantasphere"
+              width={360} // ↓ smaller
+              height={90}
+              priority
+            />
           </div>
+          <p className="text-sm text-gray-600">
+            Secure access for global trade partners
+          </p>
+        </div>
 
-          {/* Role Selection Grid */}
-          <div className="grid md:grid-cols-2 gap-8 lg:gap-12">
-            {/* Admin Portal */}
-            <Link href="/admin/login">
-              <div className="group backdrop-blur-xl bg-gradient-to-br from-blue-600/20 to-blue-900/20 border border-blue-400/30 hover:border-blue-400/60 rounded-2xl p-8 sm:p-12 shadow-2xl hover:shadow-blue-500/50 transition-all duration-300 cursor-pointer h-full">
-                {/* Icon */}
-                <div className="w-16 h-16 sm:w-20 sm:h-20 bg-blue-500/20 rounded-xl flex items-center justify-center mb-6 group-hover:bg-blue-500/40 transition-colors">
-                  <span className="text-4xl sm:text-5xl">👤</span>
-                </div>
-
-                {/* Title */}
-                <h2 className="text-3xl sm:text-4xl font-bold text-white mb-3">
-                  Admin Portal
-                </h2>
-
-                {/* Description */}
-                <p className="text-blue-100 mb-6 text-sm sm:text-base">
-                  Manage products, orders, inquiries, and all platform
-                  operations
-                </p>
-
-                {/* Features */}
-                <div className="space-y-2 mb-8">
-                  {[
-                    "📊 Dashboard",
-                    "📂 Category Management",
-                    "📦 Product CRUD",
-                    "👥 Buyer Management",
-                    "🛍️ Order Management",
-                    "💬 Inquiry Management",
-                    "🎖️ Certificate Control",
-                    "🏠 Homepage Sections",
-                    "🚚 Tracking Updates",
-                  ].map((feature, idx) => (
-                    <div
-                      key={idx}
-                      className="flex items-center text-blue-200 text-sm"
-                    >
-                      <span className="mr-3">✓</span>
-                      {feature}
-                    </div>
-                  ))}
-                </div>
-
-                {/* CTA Button */}
-                <div className="w-full bg-gradient-to-r from-blue-600 to-blue-700 group-hover:from-blue-700 group-hover:to-blue-800 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-200 shadow-lg group-hover:shadow-blue-500/50 text-center">
-                  Admin Sign In
-                </div>
-
-                {/* Credentials Info */}
-                <div className="mt-6 p-4 bg-blue-500/10 border border-blue-400/30 rounded-lg">
-                  <p className="text-xs text-blue-200 font-mono">
-                    Email: {STATIC_CREDENTIALS.admin.email}
-                  </p>
-                </div>
-              </div>
-            </Link>
-
-            {/* Buyer Portal */}
-            <Link href="/buyer/login">
-              <div className="group backdrop-blur-xl bg-gradient-to-br from-green-600/20 to-emerald-900/20 border border-green-400/30 hover:border-green-400/60 rounded-2xl p-8 sm:p-12 shadow-2xl hover:shadow-green-500/50 transition-all duration-300 cursor-pointer h-full">
-                {/* Icon */}
-                <div className="w-16 h-16 sm:w-20 sm:h-20 bg-green-500/20 rounded-xl flex items-center justify-center mb-6 group-hover:bg-green-500/40 transition-colors">
-                  <span className="text-4xl sm:text-5xl">🛒</span>
-                </div>
-
-                {/* Title */}
-                <h2 className="text-3xl sm:text-4xl font-bold text-white mb-3">
-                  Buyer Portal
-                </h2>
-
-                {/* Description */}
-                <p className="text-green-100 mb-6 text-sm sm:text-base">
-                  Browse products, submit inquiries, and manage your orders
-                </p>
-
-                {/* Features */}
-                <div className="space-y-2 mb-8">
-                  {[
-                    "📊 Dashboard",
-                    "💬 View Inquiries",
-                    "🛍️ Track Orders",
-                    "🚚 Shipping Status",
-                    "📥 Download Documents",
-                    "📋 View Invoices",
-                    "👤 Profile Management",
-                  ].map((feature, idx) => (
-                    <div
-                      key={idx}
-                      className="flex items-center text-green-200 text-sm"
-                    >
-                      <span className="mr-3">✓</span>
-                      {feature}
-                    </div>
-                  ))}
-                </div>
-
-                {/* CTA Button */}
-                <div className="w-full bg-gradient-to-r from-green-600 to-emerald-600 group-hover:from-green-700 group-hover:to-emerald-700 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-200 shadow-lg group-hover:shadow-green-500/50 text-center">
-                  Buyer Sign In
-                </div>
-
-                {/* Credentials Info */}
-                <div className="mt-6 p-4 bg-green-500/10 border border-green-400/30 rounded-lg">
-                  <p className="text-xs text-green-200 font-mono">
-                    Email: {STATIC_CREDENTIALS.buyer.email}
-                  </p>
-                </div>
-              </div>
-            </Link>
-          </div>
-
-          {/* Footer */}
-          <div className="text-center mt-12 sm:mt-16">
-            <p className="text-gray-300 text-sm sm:text-base mb-4">
-              New to Avantasphere?
-            </p>
-            <Link
-              href="/register"
-              className="inline-block bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white font-semibold py-3 px-8 rounded-lg transition-all duration-200 shadow-lg hover:shadow-green-500/50"
+        {/* Role Cards */}
+        <div className="grid md:grid-cols-2 gap-5">
+          {/* Admin Card */}
+          <Link href="/admin/login">
+            <div
+              className="group cursor-pointer rounded-xl border border-gray-200 
+              bg-gradient-to-b from-white to-gray-50/60 
+              backdrop-blur-md p-5 shadow-sm 
+              transition-all duration-300 
+              hover:-translate-y-1 hover:shadow-xl hover:border-blue-300 hover:ring-1 hover:ring-blue-200"
             >
-              Create Buyer Account
-            </Link>
-          </div>
-
-          {/* Info Cards */}
-          <div className="grid md:grid-cols-3 gap-4 mt-12 sm:mt-16">
-            {[
-              {
-                icon: "🔒",
-                title: "Secure",
-                desc: "Enterprise-grade security",
-              },
-              {
-                icon: "⚡",
-                title: "Fast",
-                desc: "Instant access & processing",
-              },
-              { icon: "🌍", title: "Global", desc: "Worldwide operations" },
-            ].map((card, idx) => (
+              {/* Icon */}
               <div
-                key={idx}
-                className="backdrop-blur bg-white/5 border border-white/10 rounded-lg p-4 text-center"
+                className="mb-3 inline-flex h-11 w-11 items-center justify-center rounded-lg bg-blue-50 text-blue-600 
+                transition group-hover:bg-blue-600 group-hover:text-white"
               >
-                <div className="text-3xl mb-2">{card.icon}</div>
-                <h3 className="text-white font-semibold text-sm mb-1">
-                  {card.title}
-                </h3>
-                <p className="text-gray-300 text-xs">{card.desc}</p>
+                <ShieldCheck size={20} />
               </div>
-            ))}
-          </div>
+
+              <h2 className="text-base font-semibold text-gray-900 mb-1">
+                Admin Portal
+              </h2>
+
+              <p className="text-sm text-gray-600 mb-3">
+                Manage products, buyers, inquiries, and operations
+              </p>
+
+              <ul className="space-y-1 text-sm text-gray-600 mb-5">
+                <li>• Dashboard & analytics</li>
+                <li>• Product & category control</li>
+                <li>• Buyer & inquiry management</li>
+                <li>• Certificates & compliance</li>
+              </ul>
+
+              <div className="inline-flex items-center gap-1 text-sm font-medium text-blue-600 group-hover:gap-2 transition-all">
+                Sign in as Admin <ArrowRight size={16} />
+              </div>
+
+              <div className="mt-3 text-xs text-gray-400">
+                Demo: {STATIC_CREDENTIALS.admin.email}
+              </div>
+            </div>
+          </Link>
+
+          {/* Buyer Card */}
+          <Link href="/buyer/login">
+            <div
+              className="group cursor-pointer rounded-xl border border-gray-200 
+              bg-gradient-to-b from-white to-gray-50/60 
+              backdrop-blur-md p-5 shadow-sm 
+              transition-all duration-300 
+              hover:-translate-y-1 hover:shadow-xl hover:border-emerald-300 hover:ring-1 hover:ring-emerald-200"
+            >
+              {/* Icon */}
+              <div
+                className="mb-3 inline-flex h-11 w-11 items-center justify-center rounded-lg bg-emerald-50 text-emerald-600 
+                transition group-hover:bg-emerald-600 group-hover:text-white"
+              >
+                <ShoppingBag size={20} />
+              </div>
+
+              <h2 className="text-base font-semibold text-gray-900 mb-1">
+                Buyer Portal
+              </h2>
+
+              <p className="text-sm text-gray-600 mb-3">
+                Browse products, send inquiries, and track orders
+              </p>
+
+              <ul className="space-y-1 text-sm text-gray-600 mb-5">
+                <li>• View verified products</li>
+                <li>• Submit RFQs & inquiries</li>
+                <li>• Track orders & shipping</li>
+                <li>• Download invoices & docs</li>
+              </ul>
+
+              <div className="inline-flex items-center gap-1 text-sm font-medium text-emerald-600 group-hover:gap-2 transition-all">
+                Sign in as Buyer <ArrowRight size={16} />
+              </div>
+
+              <div className="mt-3 text-xs text-gray-400">
+                Demo: {STATIC_CREDENTIALS.buyer.email}
+              </div>
+            </div>
+          </Link>
+        </div>
+
+        {/* Footer CTA */}
+        <div className="text-center mt-8">
+          <p className="text-sm text-gray-600 mb-3">
+            New buyer sourcing from India?
+          </p>
+          <Link
+            href="/register"
+            className="inline-flex items-center rounded-md bg-emerald-600 px-6 py-2.5 
+              text-sm font-medium text-white transition hover:bg-emerald-700 hover:shadow-md"
+          >
+            Create Buyer Account
+          </Link>
         </div>
       </div>
     </main>

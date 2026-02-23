@@ -2,205 +2,155 @@
 
 import { DashboardLayout } from "@/components/DashboardLayout";
 import Link from "next/link";
+import {
+  DollarSign,
+  Package,
+  Users,
+  ShoppingCart,
+  MessageSquare,
+  Folder,
+  Boxes,
+  UserCheck,
+  Truck,
+  Award,
+  Home,
+  Activity,
+  FileText,
+} from "lucide-react";
 
 export default function AdminDashboardPage() {
   return (
     <DashboardLayout role="admin" currentPage="Dashboard">
-      <div className="p-4 md:p-8 bg-gradient-to-br from-blue-50 to-blue-100 min-h-screen">
-        {/* Header */}
+      <div className="min-h-screen bg-gradient-to-br from-white via-gray-50 to-white p-4 md:p-8">
+        {/* Header – compact & left */}
         <div className="mb-8">
-          <h1 className="text-4xl md:text-5xl font-bold text-blue-900 mb-2">
-            Welcome, Admin! 👋
+          <h1 className="text-xl font-semibold text-gray-900">
+            Admin Dashboard
           </h1>
-          <p className="text-lg text-blue-700">
-            Manage products, categories, buyers, and orders
-          </p>
+          <p className="text-sm text-gray-500">Overview & management access</p>
         </div>
 
-        {/* Quick Stats */}
-        <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-8">
-          <div className="bg-white rounded-lg p-4 md:p-6 shadow-md border-l-4 border-blue-500">
-            <div className="text-3xl md:text-4xl font-bold text-blue-600">
-              $45.2K
+        {/* Stats – 5 in a Row */}
+        <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-10">
+          {[
+            [DollarSign, "$45.2K", "Revenue"],
+            [Package, "128", "Products"],
+            [Users, "45", "Buyers"],
+            [ShoppingCart, "82", "Orders"],
+            [MessageSquare, "18", "Inquiries"],
+          ].map(([Icon, value, label], i) => (
+            <div
+              key={i}
+              className="flex items-center gap-4 rounded-xl bg-white/60 backdrop-blur-md border border-white/30 p-4 shadow-sm transition hover:-translate-y-1 hover:shadow-md"
+            >
+              <Icon className="h-7 w-7 text-gray-700" />
+              <div>
+                <div className="text-lg font-semibold text-gray-900">
+                  {value}
+                </div>
+                <div className="text-xs text-gray-500">{label}</div>
+              </div>
             </div>
-            <div className="text-sm md:text-base text-gray-600 mt-1">
-              Revenue
-            </div>
-          </div>
-          <div className="bg-white rounded-lg p-4 md:p-6 shadow-md border-l-4 border-blue-500">
-            <div className="text-3xl md:text-4xl font-bold text-blue-600">
-              128
-            </div>
-            <div className="text-sm md:text-base text-gray-600 mt-1">
-              Products
-            </div>
-          </div>
-          <div className="bg-white rounded-lg p-4 md:p-6 shadow-md border-l-4 border-blue-500">
-            <div className="text-3xl md:text-4xl font-bold text-blue-600">
-              45
-            </div>
-            <div className="text-sm md:text-base text-gray-600 mt-1">
-              Buyers
-            </div>
-          </div>
-          <div className="bg-white rounded-lg p-4 md:p-6 shadow-md border-l-4 border-blue-500">
-            <div className="text-3xl md:text-4xl font-bold text-blue-600">
-              82
-            </div>
-            <div className="text-sm md:text-base text-gray-600 mt-1">
-              Orders
-            </div>
-          </div>
-          <div className="bg-white rounded-lg p-4 md:p-6 shadow-md border-l-4 border-blue-500">
-            <div className="text-3xl md:text-4xl font-bold text-blue-600">
-              18
-            </div>
-            <div className="text-sm md:text-base text-gray-600 mt-1">
-              Inquiries
-            </div>
-          </div>
+          ))}
         </div>
 
-        {/* Feature Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {/* Categories */}
-          <Link href="/admin/categories">
-            <div className="bg-white rounded-lg shadow-md hover:shadow-xl hover:scale-105 transition-all p-6 cursor-pointer border-t-4 border-blue-500">
-              <div className="text-5xl mb-3">📂</div>
-              <h3 className="text-xl font-bold text-gray-900 mb-2">
-                Categories
-              </h3>
-              <p className="text-gray-600 text-sm">Manage product categories</p>
-              <div className="mt-4 text-blue-600 font-semibold">
-                Manage Categories →
-              </div>
-            </div>
-          </Link>
-
-          {/* Products */}
-          <Link href="/admin/products">
-            <div className="bg-white rounded-lg shadow-md hover:shadow-xl hover:scale-105 transition-all p-6 cursor-pointer border-t-4 border-blue-500">
-              <div className="text-5xl mb-3">📦</div>
-              <h3 className="text-xl font-bold text-gray-900 mb-2">Products</h3>
-              <p className="text-gray-600 text-sm">
-                Create and manage products
-              </p>
-              <div className="mt-4 text-blue-600 font-semibold">
-                Manage Products →
-              </div>
-            </div>
-          </Link>
-
-          {/* Buyers */}
-          <Link href="/admin/buyers">
-            <div className="bg-white rounded-lg shadow-md hover:shadow-xl hover:scale-105 transition-all p-6 cursor-pointer border-t-4 border-blue-500">
-              <div className="text-5xl mb-3">👥</div>
-              <h3 className="text-xl font-bold text-gray-900 mb-2">Buyers</h3>
-              <p className="text-gray-600 text-sm">Manage buyer accounts</p>
-              <div className="mt-4 text-blue-600 font-semibold">
-                View Buyers →
-              </div>
-            </div>
-          </Link>
-
-          {/* Orders */}
-          <Link href="/admin/orders">
-            <div className="bg-white rounded-lg shadow-md hover:shadow-xl hover:scale-105 transition-all p-6 cursor-pointer border-t-4 border-blue-500">
-              <div className="text-5xl mb-3">🛍️</div>
-              <h3 className="text-xl font-bold text-gray-900 mb-2">Orders</h3>
-              <p className="text-gray-600 text-sm">Process and manage orders</p>
-              <div className="mt-4 text-blue-600 font-semibold">
-                Manage Orders →
-              </div>
-            </div>
-          </Link>
-
-          {/* Inquiries */}
-          <Link href="/admin/inquiries">
-            <div className="bg-white rounded-lg shadow-md hover:shadow-xl hover:scale-105 transition-all p-6 cursor-pointer border-t-4 border-blue-500">
-              <div className="text-5xl mb-3">📋</div>
-              <h3 className="text-xl font-bold text-gray-900 mb-2">
-                Inquiries
-              </h3>
-              <p className="text-gray-600 text-sm">Handle buyer inquiries</p>
-              <div className="mt-4 text-blue-600 font-semibold">
-                View Inquiries →
-              </div>
-            </div>
-          </Link>
-
-          {/* Certificates */}
-          <Link href="/admin/certificates">
-            <div className="bg-white rounded-lg shadow-md hover:shadow-xl hover:scale-105 transition-all p-6 cursor-pointer border-t-4 border-blue-500">
-              <div className="text-5xl mb-3">🎖️</div>
-              <h3 className="text-xl font-bold text-gray-900 mb-2">
-                Certificates
-              </h3>
-              <p className="text-gray-600 text-sm">Manage certifications</p>
-              <div className="mt-4 text-blue-600 font-semibold">
-                Configure Certs →
-              </div>
-            </div>
-          </Link>
-
-          {/* Homepage */}
-          <Link href="/admin/homepage">
-            <div className="bg-white rounded-lg shadow-md hover:shadow-xl hover:scale-105 transition-all p-6 cursor-pointer border-t-4 border-blue-500">
-              <div className="text-5xl mb-3">🏠</div>
-              <h3 className="text-xl font-bold text-gray-900 mb-2">Homepage</h3>
-              <p className="text-gray-600 text-sm">Control homepage sections</p>
-              <div className="mt-4 text-blue-600 font-semibold">
-                Edit Homepage →
-              </div>
-            </div>
-          </Link>
-
-          {/* Tracking */}
-          <Link href="/admin/tracking">
-            <div className="bg-white rounded-lg shadow-md hover:shadow-xl hover:scale-105 transition-all p-6 cursor-pointer border-t-4 border-blue-500">
-              <div className="text-5xl mb-3">🚚</div>
-              <h3 className="text-xl font-bold text-gray-900 mb-2">Tracking</h3>
-              <p className="text-gray-600 text-sm">Update shipment tracking</p>
-              <div className="mt-4 text-blue-600 font-semibold">
-                Update Tracking →
-              </div>
-            </div>
-          </Link>
+        {/* Feature Grid – cards aligned in rows */}
+        <div className="mt-14">
+          <h2 className="text-lg font-semibold text-gray-900 mb-4">Feature</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {[
+              [
+                Folder,
+                "Categories",
+                "Manage product categories",
+                "/admin/categories",
+              ],
+              [
+                Boxes,
+                "Products",
+                "Create and manage products",
+                "/admin/products",
+              ],
+              [UserCheck, "Buyers", "Manage buyer accounts", "/admin/buyers"],
+              [
+                ShoppingCart,
+                "Orders",
+                "Process customer orders",
+                "/admin/orders",
+              ],
+              [
+                MessageSquare,
+                "Inquiries",
+                "Handle buyer inquiries",
+                "/admin/inquiries",
+              ],
+              [
+                Award,
+                "Certificates",
+                "Manage certifications",
+                "/admin/certificates",
+              ],
+              [Home, "Homepage", "Control homepage content", "/admin/homepage"],
+              [
+                Truck,
+                "Tracking",
+                "Update shipment tracking",
+                "/admin/tracking",
+              ],
+            ].map(([Icon, title, desc, link], i) => (
+              <Link key={i} href={link}>
+                <div className="flex items-start gap-4 rounded-xl bg-white/60 backdrop-blur-md border border-white/30 p-5 shadow-sm transition hover:-translate-y-1 hover:shadow-md cursor-pointer">
+                  <div className="w-10 h-10 bg-gradient-to-br from-[#3B82F6] to-[#0c1951] rounded-xl flex items-center justify-center">
+                    <Icon className="w-6 h-6 text-white" />
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium text-gray-900">{title}</p>
+                    <p className="text-xs text-gray-500">{desc}</p>
+                  </div>
+                </div>
+              </Link>
+            ))}
+          </div>
         </div>
-
-        {/* Recent Activity */}
-        <div className="mt-12 bg-white rounded-lg shadow-md p-6">
-          <h2 className="text-2xl font-bold text-gray-900 mb-4">
+        {/* Recent Activity – grid + clickable */}
+        <div className="mt-14">
+          <h2 className="text-lg font-semibold text-gray-900 mb-4">
             Recent Activity
           </h2>
-          <div className="space-y-3">
-            <div className="flex items-center justify-between py-3 border-b">
-              <div>
-                <p className="font-semibold text-gray-900">
-                  New Order #ORD-2025-082 Placed
-                </p>
-                <p className="text-sm text-gray-600">1 hour ago</p>
-              </div>
-              <span className="text-blue-600 font-semibold">✓</span>
-            </div>
-            <div className="flex items-center justify-between py-3 border-b">
-              <div>
-                <p className="font-semibold text-gray-900">
-                  New Buyer Registration
-                </p>
-                <p className="text-sm text-gray-600">3 hours ago</p>
-              </div>
-              <span className="text-blue-600 font-semibold">👤</span>
-            </div>
-            <div className="flex items-center justify-between py-3">
-              <div>
-                <p className="font-semibold text-gray-900">
-                  Product #PRD-125 Updated
-                </p>
-                <p className="text-sm text-gray-600">5 hours ago</p>
-              </div>
-              <span className="text-blue-600 font-semibold">📝</span>
-            </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {[
+              [
+                Activity,
+                "New Order Placed",
+                "Order #ORD-2025-082",
+                "/admin/orders",
+              ],
+              [
+                UserCheck,
+                "New Buyer Registered",
+                "Buyer account created",
+                "/admin/buyers",
+              ],
+              [
+                FileText,
+                "Product Updated",
+                "PRD-125 modified",
+                "/admin/products",
+              ],
+            ].map(([Icon, title, desc, link], i) => (
+              <Link key={i} href={link}>
+                <div className="flex items-start gap-4 rounded-xl bg-white/60 backdrop-blur-md border border-white/30 p-5 shadow-sm transition hover:-translate-y-1 hover:shadow-md cursor-pointer">
+                  <div className="w-10 h-10 bg-gradient-to-br from-[#3B82F6] to-[#0c1951] rounded-xl flex items-center justify-center">
+                    <Icon className="w-6 h-6 text-white" />
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium text-gray-900">{title}</p>
+                    <p className="text-xs text-gray-500">{desc}</p>
+                  </div>
+                </div>
+              </Link>
+            ))}
           </div>
         </div>
       </div>

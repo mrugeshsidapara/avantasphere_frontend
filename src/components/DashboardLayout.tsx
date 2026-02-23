@@ -2,7 +2,25 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
+import {
+  LayoutDashboard,
+  Folder,
+  Package,
+  Users,
+  ShoppingCart,
+  MessageSquare,
+  Award,
+  Home,
+  Truck,
+  FileText,
+  LogOut,
+  Menu,
+  X,
+  User,
+  Globe,
+} from "lucide-react";
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
@@ -11,24 +29,24 @@ interface DashboardLayoutProps {
 }
 
 const adminNavItems = [
-  { label: "Dashboard", href: "/admin", icon: "📊" },
-  { label: "Categories", href: "/admin/categories", icon: "📂" },
-  { label: "Products", href: "/admin/products", icon: "📦" },
-  { label: "Buyers", href: "/admin/buyers", icon: "👥" },
-  { label: "Orders", href: "/admin/orders", icon: "🛍️" },
-  { label: "Inquiries", href: "/admin/inquiries", icon: "📋" },
-  { label: "Certificates", href: "/admin/certificates", icon: "🎖️" },
-  { label: "Homepage", href: "/admin/homepage", icon: "🏠" },
-  { label: "Tracking", href: "/admin/tracking", icon: "🚚" },
+  { label: "Dashboard", href: "/admin", icon: LayoutDashboard },
+  { label: "Categories", href: "/admin/categories", icon: Folder },
+  { label: "Products", href: "/admin/products", icon: Package },
+  { label: "Buyers", href: "/admin/buyers", icon: Users },
+  { label: "Orders", href: "/admin/orders", icon: ShoppingCart },
+  { label: "Inquiries", href: "/admin/inquiries", icon: MessageSquare },
+  { label: "Certificates", href: "/admin/certificates", icon: Award },
+  { label: "Homepage", href: "/admin/homepage", icon: Home },
+  { label: "Tracking", href: "/admin/tracking", icon: Truck },
 ];
 
 const buyerNavItems = [
-  { label: "Dashboard", href: "/buyer/dashboard", icon: "📊" },
-  { label: "Inquiries", href: "/buyer/inquiries", icon: "💬" },
-  { label: "Orders", href: "/buyer/orders", icon: "🛍️" },
-  { label: "Documents", href: "/buyer/documents", icon: "📥" },
-  { label: "Invoices", href: "/buyer/invoices", icon: "📋" },
-  { label: "Profile", href: "/buyer/profile", icon: "👤" },
+  { label: "Dashboard", href: "/buyer/dashboard", icon: LayoutDashboard },
+  { label: "Inquiries", href: "/buyer/inquiries", icon: MessageSquare },
+  { label: "Orders", href: "/buyer/orders", icon: ShoppingCart },
+  { label: "Documents", href: "/buyer/documents", icon: FileText },
+  { label: "Invoices", href: "/buyer/invoices", icon: FileText },
+  { label: "Profile", href: "/buyer/profile", icon: User },
 ];
 
 export function DashboardLayout({
@@ -39,120 +57,119 @@ export function DashboardLayout({
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const router = useRouter();
   const navItems = role === "admin" ? adminNavItems : buyerNavItems;
-  const bgColor = role === "admin" ? "bg-blue-50" : "bg-green-50";
-  const accentColor = role === "admin" ? "bg-blue-600" : "bg-green-600";
-  const accentLight = role === "admin" ? "text-blue-600" : "text-green-600";
-  const hoverBg = role === "admin" ? "hover:bg-blue-100" : "hover:bg-green-100";
-  const borderColor = role === "admin" ? "border-blue-200" : "border-green-200";
 
   const handleLogout = async () => {
-    try {
-      await fetch("/api/auth/logout", { method: "POST" });
-      router.push("/login");
-    } catch (error) {
-      console.error("Logout failed:", error);
-    }
+    await fetch("/api/auth/logout", { method: "POST" });
+    router.push("/login");
   };
 
   return (
-    <div className={`flex min-h-screen ${bgColor}`}>
+    <div className="flex min-h-screen bg-gray-50">
       {/* Desktop Sidebar */}
-      <aside
-        className={`hidden md:flex md:w-64 ${accentColor} text-white flex-col border-r-4 ${borderColor} shadow-lg`}
-      >
-        <div className="p-6 border-b-2 border-opacity-30">
-          <Link href="/" className="flex items-center gap-2 text-2xl font-bold">
-            <span className="text-3xl">🌍</span>
-            <span>Avantasphere</span>
+      <aside className="hidden md:flex w-64 flex-col bg-white/70 backdrop-blur-xl border-r border-gray-200">
+        <div className="p-6 border-b">
+          <Link href="/" className="block">
+            <div className="relative w-full h-[80px]">
+              <Image
+                src="/AvantaSphere_Logo_Admin.png"
+                alt="Avantasphere"
+                fill
+                priority
+                className="object-contain"
+              />
+            </div>
           </Link>
-          <p className="text-sm text-opacity-80 mt-2">
-            {role === "admin" ? "👨‍💼 Admin Panel" : "👤 Buyer Portal"}
+
+          <p className="text-xs text-gray-500 mt-3">
+            {role === "admin" ? "Admin Panel" : "Buyer Portal"}
           </p>
         </div>
 
-        <nav className="flex-1 p-4 overflow-y-auto">
-          {navItems.map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              className={`flex items-center gap-3 px-4 py-3 rounded-lg mb-2 transition-all ${
-                currentPage === item.label
-                  ? "bg-white text-blue-900 font-semibold shadow-md"
-                  : "text-white hover:bg-white hover:bg-opacity-20"
-              }`}
-            >
-              <span className="text-xl">{item.icon}</span>
-              <span>{item.label}</span>
-            </Link>
-          ))}
+        <nav className="flex-1 p-4 space-y-1">
+          {navItems.map((item) => {
+            const Icon = item.icon;
+            const active = currentPage === item.label;
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                className={`flex items-center gap-3 px-4 py-2 rounded-lg text-sm transition ${
+                  active
+                    ? "bg-blue-50 text-blue-700 font-medium"
+                    : "text-gray-700 hover:bg-gray-100"
+                }`}
+              >
+                <Icon className="w-4 h-4" />
+                {item.label}
+              </Link>
+            );
+          })}
         </nav>
 
-        <div className="p-4 border-t-2 border-opacity-30">
+        <div className="p-4 border-t">
           <button
             onClick={handleLogout}
-            className="w-full px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg font-semibold transition-colors"
+            className="w-full flex items-center gap-3 px-4 py-2 rounded-lg text-sm text-red-600 hover:bg-red-50 transition"
           >
-            🚪 Logout
+            <LogOut className="w-4 h-4" />
+            Logout
           </button>
         </div>
       </aside>
 
-      {/* Mobile Header & Sidebar */}
+      {/* Mobile Layout */}
       <div className="flex-1 flex flex-col md:hidden">
-        <header className={`${accentColor} text-white p-4 shadow-lg`}>
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <button
-                onClick={() => setSidebarOpen(!sidebarOpen)}
-                className="p-2 hover:bg-white hover:bg-opacity-20 rounded-lg"
-              >
-                {sidebarOpen ? "✕" : "☰"}
-              </button>
-              <h1 className="text-xl font-bold">Avantasphere</h1>
-            </div>
-            <span className="text-2xl">{role === "admin" ? "👨‍💼" : "👤"}</span>
-          </div>
+        <header className="bg-white/80 backdrop-blur border-b p-4 flex items-center justify-between">
+          <button
+            onClick={() => setSidebarOpen(!sidebarOpen)}
+            className="p-2 rounded-lg hover:bg-gray-100"
+          >
+            {sidebarOpen ? <X /> : <Menu />}
+          </button>
 
-          {/* Mobile Navigation Dropdown */}
-          {sidebarOpen && (
-            <nav className="mt-4 space-y-2 pb-4">
-              {navItems.map((item) => (
+          <div className="relative h-[32px] w-[140px]">
+            <Image
+              src="/AvantaSphere_Logo_Admin.png"
+              alt="Avantasphere"
+              fill
+              priority
+              className="object-contain"
+            />
+          </div>
+        </header>
+
+        {sidebarOpen && (
+          <div className="bg-white border-b p-4 space-y-2">
+            {navItems.map((item) => {
+              const Icon = item.icon;
+              return (
                 <Link
                   key={item.href}
                   href={item.href}
                   onClick={() => setSidebarOpen(false)}
-                  className={`flex items-center gap-3 px-4 py-2 rounded-lg transition-all ${
-                    currentPage === item.label
-                      ? "bg-white text-blue-900 font-semibold"
-                      : "text-white hover:bg-white hover:bg-opacity-20"
-                  }`}
+                  className="flex items-center gap-3 px-3 py-2 rounded-lg text-sm hover:bg-gray-100"
                 >
-                  <span>{item.icon}</span>
-                  <span>{item.label}</span>
+                  <Icon className="w-4 h-4" />
+                  {item.label}
                 </Link>
-              ))}
-              <button
-                onClick={() => {
-                  setSidebarOpen(false);
-                  handleLogout();
-                }}
-                className="w-full flex items-center gap-3 px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg font-semibold transition-colors"
-              >
-                <span>🚪</span>
-                <span>Logout</span>
-              </button>
-            </nav>
-          )}
-        </header>
+              );
+            })}
 
-        {/* Mobile Content */}
+            <button
+              onClick={handleLogout}
+              className="flex items-center gap-3 px-3 py-2 text-sm text-red-600"
+            >
+              <LogOut className="w-4 h-4" />
+              Logout
+            </button>
+          </div>
+        )}
+
         <main className="flex-1 overflow-y-auto">{children}</main>
       </div>
 
       {/* Desktop Content */}
-      <main className="hidden md:flex-1 md:block md:overflow-y-auto">
-        {children}
-      </main>
+      <main className="hidden md:block flex-1 overflow-y-auto">{children}</main>
     </div>
   );
 }

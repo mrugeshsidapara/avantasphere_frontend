@@ -1,111 +1,184 @@
 "use client";
 
 import { DashboardLayout } from "@/components/DashboardLayout";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { Plus, Pencil, Trash2, Package } from "lucide-react";
+import CategoryModal from "@/components/modals/CategoryModal";
+import ConfirmDeleteModal from "@/components/modals/ConfirmDeleteModal";
+import { useCategories } from "@/lib/hooks/use-api";
 
+/* ---------------- TYPES ---------------- */
+type Category = {
+  id: string;
+  name: string;
+  slug: string;
+  description: string;
+  productCount: number;
+  sortOrder: number;
+  subcategories: string[];
+};
+
+/* ---------------- PAGE ---------------- */
 export default function CategoriesPage() {
-  const [categories] = useState([
-    {
-      id: 1,
-      name: "Fabrics & Textiles",
-      description: "Premium fabric collections",
-      products: 24,
-    },
-    {
-      id: 2,
-      name: "Leather Products",
-      description: "High-quality leather materials",
-      products: 18,
-    },
-    {
-      id: 3,
-      name: "Organic Materials",
-      description: "Eco-friendly materials",
-      products: 12,
-    },
-    {
-      id: 4,
-      name: "Industrial Supplies",
-      description: "Bulk industrial materials",
-      products: 35,
-    },
-  ]);
+  const [searchTerm, setSearchTerm] = useState("");
+
+  const { data: categories = [], loading, error } = useCategories();
+
+  const [modalOpen, setModalOpen] = useState(false);
+  const [deleteOpen, setDeleteOpen] = useState(false);
+  const [selected, setSelected] = useState<Category | null>(null);
+
+  /* ---------------- FILTER ---------------- */
+  const filteredCategories = (
+    Array.isArray(categories) ? categories : []
+  ).filter(
+    (c: Category) =>
+      (c.name ?? "").toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (c.description ?? "").toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (c.subcategories ?? []).some((sub) =>
+        sub.toLowerCase().includes(searchTerm.toLowerCase()),
+      ),
+  );
+
+  /* ---------------- ACTIONS ---------------- */
+  const openAdd = () => {
+    setSelected(null);
+    setModalOpen(true);
+  };
+
+  const openEdit = (cat: Category) => {
+    setSelected(cat);
+    setModalOpen(true);
+  };
+
+  const openDelete = (cat: Category) => {
+    setSelected(cat);
+    setDeleteOpen(true);
+  };
 
   return (
     <DashboardLayout role="admin" currentPage="Categories">
-      <div className="p-4 md:p-8 bg-gradient-to-br from-blue-50 to-blue-100 min-h-screen">
-        <div className="mb-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+      <div className="min-h-screen p-4 md:p-8 bg-gradient-to-br from-white via-gray-50 to-white">
+        {/* Header */}
+        <div className="mb-8 flex items-center justify-between">
           <div>
-            <h1 className="text-4xl md:text-5xl font-bold text-blue-900 mb-2">
-              📂 Categories
-            </h1>
-            <p className="text-lg text-blue-700">Manage product categories</p>
+            <h1 className="text-xl font-semibold text-gray-900">Categories</h1>
+            <p className="text-sm text-gray-500">Manage product categories</p>
           </div>
-          <button className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold transition-colors whitespace-nowrap">
-            + New Category
+
+          <button
+            onClick={openAdd}
+            className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-[#3B82F6] to-[#0a1c4f] text-white rounded-lg text-sm font-medium"
+          >
+            <Plus className="w-4 h-4" />
+            New Category
           </button>
         </div>
 
+        {/* Loading */}
+        {loading && (
+          <div className="text-sm text-gray-500">Loading categories…</div>
+        )}
+
         {/* Desktop Table */}
-        <div className="hidden md:block bg-white rounded-lg shadow-md overflow-hidden">
-          <table className="w-full">
-            <thead className="bg-blue-600 text-white">
-              <tr>
-                <th className="px-6 py-4 text-left font-semibold">
-                  Category Name
-                </th>
-                <th className="px-6 py-4 text-left font-semibold">
-                  Description
-                </th>
-                <th className="px-6 py-4 text-left font-semibold">Products</th>
-                <th className="px-6 py-4 text-left font-semibold">Actions</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y">
-              {categories.map((cat) => (
-                <tr key={cat.id} className="hover:bg-blue-50 transition-colors">
-                  <td className="px-6 py-4 font-semibold text-gray-900">
-                    {cat.name}
-                  </td>
-                  <td className="px-6 py-4 text-gray-700">{cat.description}</td>
-                  <td className="px-6 py-4 text-gray-700">{cat.products}</td>
-                  <td className="px-6 py-4 flex gap-2">
-                    <button className="px-3 py-1 bg-blue-500 hover:bg-blue-600 text-white rounded transition-colors text-sm">
-                      ✎ Edit
-                    </button>
-                    <button className="px-3 py-1 bg-red-500 hover:bg-red-600 text-white rounded transition-colors text-sm">
-                      🗑️ Delete
-                    </button>
-                  </td>
+        {!loading && (
+          <div className="hidden md:block rounded-2xl bg-white/60 backdrop-blur-md border shadow-sm overflow-hidden">
+            <table className="w-full">
+              <thead className="bg-gray-100 text-gray-700 text-sm">
+                <tr>
+                  <th className="px-6 py-4 text-left">Name</th>
+                  <th className="px-6 py-4 text-left">Description</th>
+                  <th className="px-6 py-4 text-left">Products</th>
+                  <th className="px-6 py-4 text-left">Actions</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+              </thead>
+              <tbody className="divide-y">
+                {filteredCategories.map((cat) => (
+                  <tr key={cat.id} className="hover:bg-white/50">
+                    <td className="px-6 py-4 font-medium">{cat.name}</td>
+                    <td className="px-6 py-4 text-sm text-gray-600">
+                      {cat.description}
+                    </td>
+                    <td className="px-6 py-4 text-sm">{cat.productCount}</td>
+                    <td className="px-6 py-4 flex gap-2">
+                      <button
+                        onClick={() => openEdit(cat)}
+                        className="inline-flex items-center gap-1 px-3 py-1.5 rounded-md bg-gray-100 hover:bg-gray-200 text-sm"
+                      >
+                        <Pencil className="w-4 h-4" />
+                        Edit
+                      </button>
+                      <button
+                        onClick={() => openDelete(cat)}
+                        className="inline-flex items-center gap-1 px-3 py-1.5 rounded-md bg-red-50 hover:bg-red-100 text-red-600 text-sm"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                        Delete
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
 
         {/* Mobile Cards */}
         <div className="md:hidden space-y-4">
-          {categories.map((cat) => (
+          {filteredCategories.map((cat) => (
             <div
               key={cat.id}
-              className="bg-white rounded-lg shadow-md p-4 border-l-4 border-blue-500"
+              className="rounded-xl bg-white/60 backdrop-blur-md border p-4"
             >
-              <h3 className="font-bold text-lg text-gray-900">{cat.name}</h3>
-              <p className="text-gray-600 text-sm mt-1">{cat.description}</p>
-              <div className="mt-3 text-sm text-gray-600 mb-3">
-                📦 {cat.products} products
+              <h3 className="font-medium">{cat.name}</h3>
+              <p className="text-sm text-gray-600">{cat.description}</p>
+
+              <div className="flex items-center gap-2 text-sm text-gray-500 mt-2">
+                <Package className="w-4 h-4" />
+                {cat.productCount} products
               </div>
-              <div className="flex gap-2">
-                <button className="flex-1 px-3 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded transition-colors font-semibold text-sm">
-                  ✎ Edit
+
+              <div className="flex gap-2 mt-3">
+                <button
+                  onClick={() => openEdit(cat)}
+                  className="flex-1 px-3 py-2 bg-gray-100 rounded-md text-sm"
+                >
+                  Edit
                 </button>
-                <button className="flex-1 px-3 py-2 bg-red-500 hover:bg-red-600 text-white rounded transition-colors font-semibold text-sm">
-                  🗑️ Delete
+                <button
+                  onClick={() => openDelete(cat)}
+                  className="flex-1 px-3 py-2 bg-red-50 text-red-600 rounded-md text-sm"
+                >
+                  Delete
                 </button>
               </div>
             </div>
           ))}
         </div>
+
+        {/* Modals */}
+        {modalOpen && (
+          <CategoryModal
+            category={selected}
+            onClose={() => setModalOpen(false)}
+            onSaved={() => window.location.reload()}
+          />
+        )}
+
+        {deleteOpen && selected && (
+          <ConfirmDeleteModal
+            title="Delete Category"
+            message={`Are you sure you want to delete the category "${selected.name}"? This action cannot be undone.`}
+            onClose={() => setDeleteOpen(false)}
+            onConfirm={async () => {
+              await fetch(`/api/admin/categories/${selected.id}`, {
+                method: "DELETE",
+              });
+              setDeleteOpen(false);
+              window.location.reload();
+            }}
+          />
+        )}
       </div>
     </DashboardLayout>
   );
