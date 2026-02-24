@@ -1,15 +1,17 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import { api } from '@/lib/api/client';
+import { useState, useEffect } from "react";
+import { api } from "@/lib/api/client";
+import { Category } from "../types";
 
 export function useCategories() {
-  const [data, setData] = useState<Awaited<ReturnType<typeof api.get>>['data']>(null);
+  const [data, setData] =
+    useState<Awaited<ReturnType<typeof api.get>>["data"]>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    api.get<unknown[]>('/api/categories').then(({ data: d, error: e }) => {
+    api.get<Category[]>("/api/categories").then(({ data: d, error: e }) => {
       setData(d ?? null);
       setError(e ?? null);
       setLoading(false);
@@ -20,7 +22,8 @@ export function useCategories() {
 }
 
 export function useCategory(id: string | null) {
-  const [data, setData] = useState<Awaited<ReturnType<typeof api.get>>['data']>(null);
+  const [data, setData] =
+    useState<Awaited<ReturnType<typeof api.get>>["data"]>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(!!id);
 
@@ -41,14 +44,15 @@ export function useCategory(id: string | null) {
 }
 
 export function useProducts(categoryId?: string | null) {
-  const [data, setData] = useState<Awaited<ReturnType<typeof api.get>>['data']>(null);
+  const [data, setData] =
+    useState<Awaited<ReturnType<typeof api.get>>["data"]>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const url = categoryId
       ? `/api/products?categoryId=${encodeURIComponent(categoryId)}`
-      : '/api/products';
+      : "/api/products";
     api.get<unknown[]>(url).then(({ data: d, error: e }) => {
       setData(d ?? null);
       setError(e ?? null);
@@ -60,7 +64,8 @@ export function useProducts(categoryId?: string | null) {
 }
 
 export function useProduct(id: string | null) {
-  const [data, setData] = useState<Awaited<ReturnType<typeof api.get>>['data']>(null);
+  const [data, setData] =
+    useState<Awaited<ReturnType<typeof api.get>>["data"]>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(!!id);
 

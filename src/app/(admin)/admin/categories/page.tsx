@@ -16,6 +16,7 @@ type Category = {
   productCount: number;
   sortOrder: number;
   subcategories: string[];
+  image?: string | null;
 };
 
 /* ---------------- PAGE ---------------- */
@@ -89,6 +90,7 @@ export default function CategoriesPage() {
                   <th className="px-6 py-4 text-left">Name</th>
                   <th className="px-6 py-4 text-left">Description</th>
                   <th className="px-6 py-4 text-left">Products</th>
+                  <th className="px-6 py-4 text-left">Image</th>
                   <th className="px-6 py-4 text-left">Actions</th>
                 </tr>
               </thead>
@@ -100,6 +102,19 @@ export default function CategoriesPage() {
                       {cat.description}
                     </td>
                     <td className="px-6 py-4 text-sm">{cat.productCount}</td>
+                    <td className="px-6 py-4">
+                      {cat.image ? (
+                        <img
+                          src={cat.image}
+                          alt={cat.name}
+                          className="w-12 h-12 rounded-md object-cover border"
+                        />
+                      ) : (
+                        <div className="w-12 h-12 rounded-md bg-gray-100 flex items-center justify-center text-xs text-gray-400">
+                          N/A
+                        </div>
+                      )}
+                    </td>
                     <td className="px-6 py-4 flex gap-2">
                       <button
                         onClick={() => openEdit(cat)}
@@ -137,6 +152,14 @@ export default function CategoriesPage() {
                 <Package className="w-4 h-4" />
                 {cat.productCount} products
               </div>
+
+              {cat.image && (
+                <img
+                  src={cat.image}
+                  alt={cat.name}
+                  className="w-full h-40 object-cover rounded-lg mb-3"
+                />
+              )}
 
               <div className="flex gap-2 mt-3">
                 <button

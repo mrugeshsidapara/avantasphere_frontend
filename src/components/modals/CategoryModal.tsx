@@ -3,6 +3,8 @@
 import { useState } from "react";
 import Modal from "./Modal";
 import { Category } from "@/app/lib/models/category";
+import { writeFile } from "fs/promises";
+import path from "path";
 
 export default function CategoryModal({
   category,
@@ -15,7 +17,8 @@ export default function CategoryModal({
 }) {
   const [name, setName] = useState(category?.name ?? "");
   const [description, setDescription] = useState(category?.description ?? "");
-
+  const [image, setImage] = useState<string | null>(category?.image || null);
+  const [uploading, setUploading] = useState(false);
   const save = async () => {
     await fetch("/api/categories", {
       method: category ? "PUT" : "POST",
@@ -24,6 +27,7 @@ export default function CategoryModal({
         id: category?.id,
         name,
         description,
+        image,
       }),
     });
 
@@ -48,6 +52,44 @@ export default function CategoryModal({
         value={description}
         onChange={(e) => setDescription(e.target.value)}
       />
+      <div className="space-y-2">
+        <label className="text-xs font-medium text-gray-600">
+          Category Image
+        </label>
+
+        {image && (
+          <img
+            src={image}
+            className="w-full h-40 object-cover rounded-lg border"
+          />
+        )}
+
+        <input
+          type="file"
+          accept="image/*"
+          onChange={async (e) => {
+            if (!e.target.files?.[0]) return;
+
+            const file = e.target.files[0];
+            const formData = new FormData();
+            formData.append("file", file);
+
+            setUploading(true);
+
+            const res = await fetch("/api/upload", {
+              method: "POST",
+              body: formData,
+            });
+
+            const data = await res.json();
+            setImage(data.url);
+            setUploading(false);
+          }}
+          className="block w-full text-sm"
+        />
+
+        {uploading && <p className="text-xs text-gray-500">Uploading image…</p>}
+      </div>
       <div className="flex justify-end gap-2 mt-4">
         <button onClick={onClose} className="text-sm px-4 py-2">
           Cancel
