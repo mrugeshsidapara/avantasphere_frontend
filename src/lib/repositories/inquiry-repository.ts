@@ -1,21 +1,22 @@
+import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Inquiry } from "@/lib/types";
+import { getSupabaseBackendClient } from "@/lib/supabase/server";
 
 export interface IInquiryRepository {
-  findAll(): Promise<Inquiry[]>;
-  findById(id: string): Promise<Inquiry | null>;
-  findByBuyerId(buyerId: string): Promise<Inquiry[]>;
+  findAll(client?: SupabaseClient): Promise<Inquiry[]>;
+  findById(id: string, client?: SupabaseClient): Promise<Inquiry | null>;
+  findByBuyerId(buyerId: string, client?: SupabaseClient): Promise<Inquiry[]>;
   create(
     data: Omit<Inquiry, "id" | "createdAt" | "updatedAt" | "status">,
+    client?: SupabaseClient,
   ): Promise<Inquiry>;
-  update(id: string, data: Partial<Inquiry>): Promise<Inquiry | null>;
-  delete(id: string): Promise<boolean>;
+  update(id: string, data: Partial<Inquiry>, client?: SupabaseClient): Promise<Inquiry | null>;
+  delete(id: string, client?: SupabaseClient): Promise<boolean>;
 }
 
 export class InquiryRepository implements IInquiryRepository {
-  async findAll(): Promise<Inquiry[]> {
-    const { createSupabaseServerClient } =
-      await import("@/lib/supabase/server");
-    const supabase = await createSupabaseServerClient();
+  async findAll(client?: SupabaseClient): Promise<Inquiry[]> {
+    const supabase = client ?? getSupabaseBackendClient();
     const { data, error } = await supabase.from("inquiries").select("*");
     if (error) throw error;
     return (data ?? []).map((i) => ({
@@ -29,10 +30,8 @@ export class InquiryRepository implements IInquiryRepository {
     }));
   }
 
-  async findById(id: string): Promise<Inquiry | null> {
-    const { createSupabaseServerClient } =
-      await import("@/lib/supabase/server");
-    const supabase = await createSupabaseServerClient();
+  async findById(id: string, client?: SupabaseClient): Promise<Inquiry | null> {
+    const supabase = client ?? getSupabaseBackendClient();
     const { data, error } = await supabase
       .from("inquiries")
       .select("*")
@@ -51,10 +50,8 @@ export class InquiryRepository implements IInquiryRepository {
     };
   }
 
-  async findByBuyerId(buyerId: string): Promise<Inquiry[]> {
-    const { createSupabaseServerClient } =
-      await import("@/lib/supabase/server");
-    const supabase = await createSupabaseServerClient();
+  async findByBuyerId(buyerId: string, client?: SupabaseClient): Promise<Inquiry[]> {
+    const supabase = client ?? getSupabaseBackendClient();
     const { data, error } = await supabase
       .from("inquiries")
       .select("*")
@@ -73,10 +70,9 @@ export class InquiryRepository implements IInquiryRepository {
 
   async create(
     input: Omit<Inquiry, "id" | "createdAt" | "updatedAt" | "status">,
+    client?: SupabaseClient,
   ): Promise<Inquiry> {
-    const { createSupabaseServerClient } =
-      await import("@/lib/supabase/server");
-    const supabase = await createSupabaseServerClient();
+    const supabase = client ?? getSupabaseBackendClient();
     const { data, error } = await supabase
       .from("inquiries")
       .insert({
@@ -99,10 +95,8 @@ export class InquiryRepository implements IInquiryRepository {
     };
   }
 
-  async update(id: string, input: Partial<Inquiry>): Promise<Inquiry | null> {
-    const { createSupabaseServerClient } =
-      await import("@/lib/supabase/server");
-    const supabase = await createSupabaseServerClient();
+  async update(id: string, input: Partial<Inquiry>, client?: SupabaseClient): Promise<Inquiry | null> {
+    const supabase = client ?? getSupabaseBackendClient();
     const patch: Record<string, unknown> = {};
 
     if (input.message !== undefined) patch.message = input.message;
@@ -126,10 +120,8 @@ export class InquiryRepository implements IInquiryRepository {
     };
   }
 
-  async delete(id: string): Promise<boolean> {
-    const { createSupabaseServerClient } =
-      await import("@/lib/supabase/server");
-    const supabase = await createSupabaseServerClient();
+  async delete(id: string, client?: SupabaseClient): Promise<boolean> {
+    const supabase = client ?? getSupabaseBackendClient();
     const { error } = await supabase.from("inquiries").delete().eq("id", id);
     if (error) throw error;
     return true;

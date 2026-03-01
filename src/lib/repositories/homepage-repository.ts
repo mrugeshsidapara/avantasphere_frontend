@@ -1,10 +1,10 @@
+import type { SupabaseClient } from "@supabase/supabase-js";
 import type { HomepageSections } from "@/lib/types";
+import { getSupabaseBackendClient } from "@/lib/supabase/server";
 
 export class HomepageRepository {
-  async getSections(): Promise<HomepageSections> {
-    const { createSupabaseServerClient } =
-      await import("@/lib/supabase/server");
-    const supabase = await createSupabaseServerClient();
+  async getSections(client?: SupabaseClient): Promise<HomepageSections> {
+    const supabase = client ?? getSupabaseBackendClient();
     const { data, error } = await supabase
       .from("homepage_sections")
       .select("*");
@@ -22,23 +22,21 @@ export class HomepageRepository {
   async updateSection(
     key: string,
     value: { enabled: boolean; sortOrder?: number },
+    client?: SupabaseClient,
   ): Promise<HomepageSections> {
-    const { createSupabaseServerClient } =
-      await import("@/lib/supabase/server");
-    const supabase = await createSupabaseServerClient();
+    const supabase = client ?? getSupabaseBackendClient();
     await supabase
       .from("homepage_sections")
       .update({ enabled: value.enabled, sort_order: value.sortOrder })
       .eq("key", key);
-    return this.getSections();
+    return this.getSections(client);
   }
 
   async updateSections(
     sections: Partial<Record<string, { enabled: boolean; sortOrder?: number }>>,
+    client?: SupabaseClient,
   ): Promise<HomepageSections> {
-    const { createSupabaseServerClient } =
-      await import("@/lib/supabase/server");
-    const supabase = await createSupabaseServerClient();
+    const supabase = client ?? getSupabaseBackendClient();
     for (const [k, v] of Object.entries(sections)) {
       if (v) {
         await supabase
@@ -47,7 +45,7 @@ export class HomepageRepository {
           .eq("key", k);
       }
     }
-    return this.getSections();
+    return this.getSections(client);
   }
 }
 

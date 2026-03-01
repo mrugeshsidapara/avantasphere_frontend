@@ -1,18 +1,22 @@
 import ExportProductsPageClient from "./ExportProductsPageClient";
-import { productRepository } from "@/lib/repositories";
+import { getApiBaseUrl } from "@/lib/api/client";
 import type { Product } from "@/lib/types";
 
 export default async function ExportProductsPage() {
-  debugger;
   let products: Product[] = [];
   let error: string | null = null;
 
   try {
-    debugger;
-    products = await productRepository.findAll();
+    const base = getApiBaseUrl();
+    const res = await fetch(`${base}/api/products`, { cache: "no-store" });
+    const json = await res.json().catch(() => ({}));
+    if (!res.ok) {
+      error = json.error ?? res.statusText ?? "Failed to load products";
+    } else {
+      products = Array.isArray(json.data) ? json.data : [];
+    }
   } catch (err) {
-    debugger;
-    console.error("Failed to fetch products from repository:", err);
+    console.error("Failed to fetch products:", err);
     error = err instanceof Error ? err.message : "Failed to load products";
   }
 

@@ -44,7 +44,6 @@ export function useCategory(id: string | null) {
 }
 
 export function useProducts(categoryId?: string | null) {
-  debugger;
   const [data, setData] =
     useState<Awaited<ReturnType<typeof api.get>>["data"]>(null);
   const [error, setError] = useState<string | null>(null);

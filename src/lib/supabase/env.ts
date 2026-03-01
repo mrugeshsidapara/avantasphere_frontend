@@ -4,7 +4,6 @@ function stripQuotes(val: string) {
 }
 
 export function getSupabaseEnv() {
-    debugger;
   let url = process.env.NEXT_PUBLIC_SUPABASE_URL;
   let anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 

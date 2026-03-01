@@ -194,7 +194,7 @@ export default function CategoriesPage() {
             message={`Are you sure you want to delete the category "${selected.name}"? This action cannot be undone.`}
             onClose={() => setDeleteOpen(false)}
             onConfirm={async () => {
-              await fetch(`/api/admin/categories/${selected.id}`, {
+              await fetch(`/api/categories/${selected.id}`, {
                 method: "DELETE",
               });
               setDeleteOpen(false);

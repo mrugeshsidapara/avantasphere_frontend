@@ -39,7 +39,8 @@ export interface Buyer {
   name: string;
   company: string;
   country: string;
-  role: "buyer";
+  role: "admin" | "buyer";
+  username?: string;
   createdAt: string;
   updatedAt: string;
 }

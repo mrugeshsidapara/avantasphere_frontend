@@ -1,19 +1,19 @@
+import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Category } from "@/lib/types";
+import { getSupabaseBackendClient } from "@/lib/supabase/server";
 
 export interface ICategoryRepository {
   findAll(): Promise<Category[]>;
   findById(id: string): Promise<Category | null>;
   findBySlug(slug: string): Promise<Category | null>;
-  create(data: Omit<Category, "id">): Promise<Category>;
-  update(id: string, data: Partial<Category>): Promise<Category | null>;
-  delete(id: string): Promise<boolean>;
+  create(data: Omit<Category, "id">, client?: SupabaseClient): Promise<Category>;
+  update(id: string, data: Partial<Category>, client?: SupabaseClient): Promise<Category | null>;
+  delete(id: string, client?: SupabaseClient): Promise<boolean>;
 }
 
 export class CategoryRepository implements ICategoryRepository {
   async findAll(): Promise<Category[]> {
-    const { createSupabaseServerClient } =
-      await import("@/lib/supabase/server");
-    const supabase = await createSupabaseServerClient();
+    const supabase = getSupabaseBackendClient();
     const { data, error } = await supabase
       .from("categories")
       .select(
@@ -34,9 +34,7 @@ export class CategoryRepository implements ICategoryRepository {
   }
 
   async findById(id: string): Promise<Category | null> {
-    const { createSupabaseServerClient } =
-      await import("@/lib/supabase/server");
-    const supabase = await createSupabaseServerClient();
+    const supabase = getSupabaseBackendClient();
     const { data, error } = await supabase
       .from("categories")
       .select(
@@ -59,9 +57,7 @@ export class CategoryRepository implements ICategoryRepository {
   }
 
   async findBySlug(slug: string): Promise<Category | null> {
-    const { createSupabaseServerClient } =
-      await import("@/lib/supabase/server");
-    const supabase = await createSupabaseServerClient();
+    const supabase = getSupabaseBackendClient();
     const { data, error } = await supabase
       .from("categories")
       .select(
@@ -83,10 +79,8 @@ export class CategoryRepository implements ICategoryRepository {
     };
   }
 
-  async create(input: Omit<Category, "id">): Promise<Category> {
-    const { createSupabaseServerClient } =
-      await import("@/lib/supabase/server");
-    const supabase = await createSupabaseServerClient();
+  async create(input: Omit<Category, "id">, client?: SupabaseClient): Promise<Category> {
+    const supabase = client ?? getSupabaseBackendClient();
     const { data, error } = await supabase
       .from("categories")
       .insert({
@@ -116,10 +110,8 @@ export class CategoryRepository implements ICategoryRepository {
     };
   }
 
-  async update(id: string, input: Partial<Category>): Promise<Category | null> {
-    const { createSupabaseServerClient } =
-      await import("@/lib/supabase/server");
-    const supabase = await createSupabaseServerClient();
+  async update(id: string, input: Partial<Category>, client?: SupabaseClient): Promise<Category | null> {
+    const supabase = client ?? getSupabaseBackendClient();
     const patch: Record<string, unknown> = {};
     if (input.name !== undefined) patch.name = input.name;
     if (input.slug !== undefined) patch.slug = input.slug;
@@ -153,10 +145,8 @@ export class CategoryRepository implements ICategoryRepository {
     };
   }
 
-  async delete(id: string): Promise<boolean> {
-    const { createSupabaseServerClient } =
-      await import("@/lib/supabase/server");
-    const supabase = await createSupabaseServerClient();
+  async delete(id: string, client?: SupabaseClient): Promise<boolean> {
+    const supabase = client ?? getSupabaseBackendClient();
     const { error } = await supabase.from("categories").delete().eq("id", id);
     if (error) throw error;
     return true;

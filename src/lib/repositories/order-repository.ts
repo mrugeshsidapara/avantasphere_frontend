@@ -1,12 +1,14 @@
+import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Order } from "@/lib/types";
+import { getSupabaseBackendClient } from "@/lib/supabase/server";
 
 export interface IOrderRepository {
-  findAll(): Promise<Order[]>;
-  findById(id: string): Promise<Order | null>;
-  findByBuyerId(buyerId: string): Promise<Order[]>;
-  create(data: Omit<Order, "id" | "createdAt" | "updatedAt">): Promise<Order>;
-  update(id: string, data: Partial<Order>): Promise<Order | null>;
-  delete(id: string): Promise<boolean>;
+  findAll(client?: SupabaseClient): Promise<Order[]>;
+  findById(id: string, client?: SupabaseClient): Promise<Order | null>;
+  findByBuyerId(buyerId: string, client?: SupabaseClient): Promise<Order[]>;
+  create(data: Omit<Order, "id" | "createdAt" | "updatedAt">, client?: SupabaseClient): Promise<Order>;
+  update(id: string, data: Partial<Order>, client?: SupabaseClient): Promise<Order | null>;
+  delete(id: string, client?: SupabaseClient): Promise<boolean>;
 }
 
 function mapOrderFromDb(o: any): Order {
@@ -30,19 +32,15 @@ function mapOrderFromDb(o: any): Order {
 }
 
 export class OrderRepository implements IOrderRepository {
-  async findAll(): Promise<Order[]> {
-    const { createSupabaseServerClient } =
-      await import("@/lib/supabase/server");
-    const supabase = await createSupabaseServerClient();
+  async findAll(client?: SupabaseClient): Promise<Order[]> {
+    const supabase = client ?? getSupabaseBackendClient();
     const { data, error } = await supabase.from("orders").select("*");
     if (error) throw error;
     return (data ?? []).map(mapOrderFromDb);
   }
 
-  async findById(id: string): Promise<Order | null> {
-    const { createSupabaseServerClient } =
-      await import("@/lib/supabase/server");
-    const supabase = await createSupabaseServerClient();
+  async findById(id: string, client?: SupabaseClient): Promise<Order | null> {
+    const supabase = client ?? getSupabaseBackendClient();
     const { data, error } = await supabase
       .from("orders")
       .select("*")
@@ -53,10 +51,8 @@ export class OrderRepository implements IOrderRepository {
     return mapOrderFromDb(data);
   }
 
-  async findByBuyerId(buyerId: string): Promise<Order[]> {
-    const { createSupabaseServerClient } =
-      await import("@/lib/supabase/server");
-    const supabase = await createSupabaseServerClient();
+  async findByBuyerId(buyerId: string, client?: SupabaseClient): Promise<Order[]> {
+    const supabase = client ?? getSupabaseBackendClient();
     const { data, error } = await supabase
       .from("orders")
       .select("*")
@@ -67,10 +63,9 @@ export class OrderRepository implements IOrderRepository {
 
   async create(
     input: Omit<Order, "id" | "createdAt" | "updatedAt">,
+    client?: SupabaseClient,
   ): Promise<Order> {
-    const { createSupabaseServerClient } =
-      await import("@/lib/supabase/server");
-    const supabase = await createSupabaseServerClient();
+    const supabase = client ?? getSupabaseBackendClient();
     const productIds = input.items.map((item) => item.productId);
     const quantities = input.items.map((item) => item.quantity);
     const { data, error } = await supabase
@@ -90,10 +85,8 @@ export class OrderRepository implements IOrderRepository {
     return mapOrderFromDb(data);
   }
 
-  async update(id: string, input: Partial<Order>): Promise<Order | null> {
-    const { createSupabaseServerClient } =
-      await import("@/lib/supabase/server");
-    const supabase = await createSupabaseServerClient();
+  async update(id: string, input: Partial<Order>, client?: SupabaseClient): Promise<Order | null> {
+    const supabase = client ?? getSupabaseBackendClient();
     const patch: Record<string, unknown> = {};
     if (input.status !== undefined) patch.status = input.status;
     if (input.totalAmount !== undefined) patch.total_amount = input.totalAmount;
@@ -116,10 +109,8 @@ export class OrderRepository implements IOrderRepository {
     return mapOrderFromDb(data);
   }
 
-  async delete(id: string): Promise<boolean> {
-    const { createSupabaseServerClient } =
-      await import("@/lib/supabase/server");
-    const supabase = await createSupabaseServerClient();
+  async delete(id: string, client?: SupabaseClient): Promise<boolean> {
+    const supabase = client ?? getSupabaseBackendClient();
     const { error } = await supabase.from("orders").delete().eq("id", id);
     if (error) throw error;
     return true;

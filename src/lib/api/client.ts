@@ -1,4 +1,12 @@
-const getBase = () => (typeof window !== 'undefined' ? '' : process.env.NEXTAUTH_URL ?? 'http://localhost:3000');
+/** Base URL for API requests. Server-side needs absolute URL; client uses same origin. */
+export function getApiBaseUrl(): string {
+  if (typeof window !== 'undefined') return '';
+  const vercel = process.env.NEXT_PUBLIC_VERCEL_URL;
+  if (vercel) return `https://${vercel}`;
+  return process.env.NEXT_PUBLIC_SITE_URL ?? process.env.NEXTAUTH_URL ?? 'http://localhost:3000';
+}
+
+const getBase = () => getApiBaseUrl();
 
 async function handleRes<T>(res: Response): Promise<{ data?: T; error?: string }> {
   const json = await res.json().catch(() => ({}));

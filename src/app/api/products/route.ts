@@ -5,7 +5,6 @@ import { apiSuccess, apiError } from "@/lib/api/response";
 import { requireRole } from "@/lib/auth/supabase-auth";
 
 export async function GET(request: NextRequest) {
-  debugger;
   const { searchParams } = new URL(request.url);
   const categoryId = searchParams.get("categoryId");
   try {
@@ -40,7 +39,8 @@ export async function POST(request: NextRequest) {
         .toLowerCase()
         .replace(/\s+/g, "-")
         .replace(/[^a-z0-9-]/g, "");
-    const product = await productRepository.create({
+    const product = await productRepository.create(
+      {
       ...parsed.data,
       slug,
       description: parsed.data.description ?? "",
@@ -49,7 +49,9 @@ export async function POST(request: NextRequest) {
       applications: parsed.data.applications ?? [],
       certificateIds: parsed.data.certificateIds ?? [],
       sortOrder: parsed.data.sortOrder ?? 999,
-    });
+    },
+      auth.supabase,
+    );
     return apiSuccess(product, 201);
   } catch (e) {
     return apiError("Failed to create product", 500);

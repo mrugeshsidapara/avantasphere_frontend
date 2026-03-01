@@ -2,18 +2,22 @@ import { NextRequest } from 'next/server';
 import { certificateRepository } from '@/lib/repositories';
 import { certificateUpdateSchema } from '@/lib/validation/schemas';
 import { apiSuccess, apiError, apiNotFound } from '@/lib/api/response';
+import { requireRole } from '@/lib/auth/supabase-auth';
 
 export async function PATCH(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  const auth = await requireRole('admin');
+  if (!auth.ok) return apiError(auth.status === 401 ? 'Unauthorized' : 'Forbidden', auth.status);
+
   const { id } = await params;
   const body = await request.json();
   const parsed = certificateUpdateSchema.pick({ visible: true }).safeParse(body);
   if (!parsed.success) {
     return apiError(parsed.error.errors.map((e) => e.message).join(', '));
   }
-  const cert = await certificateRepository.update(id, { visible: parsed.data.visible });
+  const cert = await certificateRepository.update(id, { visible: parsed.data.visible }, auth.supabase);
   if (!cert) return apiNotFound('Certificate not found');
   return apiSuccess(cert);
 }

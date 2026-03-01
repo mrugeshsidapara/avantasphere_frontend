@@ -1,4 +1,5 @@
 import { createSupabaseServerClient } from '@/lib/supabase/server';
+import { buyerRepository } from '@/lib/repositories';
 
 export type AppRole = 'admin' | 'buyer';
 
@@ -12,13 +13,7 @@ export async function getSupabaseUserAndRole() {
   if (userError) throw userError;
   if (!user) return { supabase, user: null, role: null as AppRole | null };
 
-  const { data: profile, error: profileError } = await supabase
-    .from('profiles')
-    .select('role')
-    .eq('id', user.id)
-    .maybeSingle();
-
-  if (profileError) throw profileError;
+  const profile = await buyerRepository.findById(user.id, supabase);
   const role = (profile?.role ?? 'buyer') as AppRole;
 
   return { supabase, user, role };

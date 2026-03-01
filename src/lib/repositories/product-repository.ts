@@ -1,22 +1,20 @@
+import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Product } from "@/lib/types";
+import { getSupabaseBackendClient } from "@/lib/supabase/server";
 
 export interface IProductRepository {
   findAll(): Promise<Product[]>;
   findById(id: string): Promise<Product | null>;
   findByCategoryId(categoryId: string): Promise<Product[]>;
   findBySlug(slug: string): Promise<Product | null>;
-  create(data: Omit<Product, "id">): Promise<Product>;
-  update(id: string, data: Partial<Product>): Promise<Product | null>;
-  delete(id: string): Promise<boolean>;
+  create(data: Omit<Product, "id">, client?: SupabaseClient): Promise<Product>;
+  update(id: string, data: Partial<Product>, client?: SupabaseClient): Promise<Product | null>;
+  delete(id: string, client?: SupabaseClient): Promise<boolean>;
 }
 
 export class ProductRepository implements IProductRepository {
   async findAll(): Promise<Product[]> {
-    debugger;
-    const { createSupabaseServerClient } =
-      await import("@/lib/supabase/server");
-    debugger;
-    const supabase = await createSupabaseServerClient();
+    const supabase = getSupabaseBackendClient();
     const { data, error } = await supabase
       .from("products_with_specs")
       .select(
@@ -40,9 +38,7 @@ export class ProductRepository implements IProductRepository {
   }
 
   async findById(id: string): Promise<Product | null> {
-    const { createSupabaseServerClient } =
-      await import("@/lib/supabase/server");
-    const supabase = await createSupabaseServerClient();
+    const supabase = getSupabaseBackendClient();
     const { data, error } = await supabase
       .from("products_with_specs")
       .select(
@@ -69,9 +65,7 @@ export class ProductRepository implements IProductRepository {
   }
 
   async findByCategoryId(categoryId: string): Promise<Product[]> {
-    const { createSupabaseServerClient } =
-      await import("@/lib/supabase/server");
-    const supabase = await createSupabaseServerClient();
+    const supabase = getSupabaseBackendClient();
     const { data, error } = await supabase
       .from("products_with_specs")
       .select(
@@ -96,9 +90,7 @@ export class ProductRepository implements IProductRepository {
   }
 
   async findBySlug(slug: string): Promise<Product | null> {
-    const { createSupabaseServerClient } =
-      await import("@/lib/supabase/server");
-    const supabase = await createSupabaseServerClient();
+    const supabase = getSupabaseBackendClient();
     const { data, error } = await supabase
       .from("products_with_specs")
       .select(
@@ -124,10 +116,8 @@ export class ProductRepository implements IProductRepository {
     };
   }
 
-  async create(input: Omit<Product, "id">): Promise<Product> {
-    const { createSupabaseServerClient } =
-      await import("@/lib/supabase/server");
-    const supabase = await createSupabaseServerClient();
+  async create(input: Omit<Product, "id">, client?: SupabaseClient): Promise<Product> {
+    const supabase = client ?? getSupabaseBackendClient();
 
     const { data: product, error } = await supabase
       .from("products")
@@ -165,10 +155,8 @@ export class ProductRepository implements IProductRepository {
     return created;
   }
 
-  async update(id: string, input: Partial<Product>): Promise<Product | null> {
-    const { createSupabaseServerClient } =
-      await import("@/lib/supabase/server");
-    const supabase = await createSupabaseServerClient();
+  async update(id: string, input: Partial<Product>, client?: SupabaseClient): Promise<Product | null> {
+    const supabase = client ?? getSupabaseBackendClient();
 
     const patch: Record<string, unknown> = {};
     if (input.categoryId !== undefined) patch.category_id = input.categoryId;
@@ -213,10 +201,8 @@ export class ProductRepository implements IProductRepository {
     return await this.findById(id);
   }
 
-  async delete(id: string): Promise<boolean> {
-    const { createSupabaseServerClient } =
-      await import("@/lib/supabase/server");
-    const supabase = await createSupabaseServerClient();
+  async delete(id: string, client?: SupabaseClient): Promise<boolean> {
+    const supabase = client ?? getSupabaseBackendClient();
     const { error } = await supabase.from("products").delete().eq("id", id);
     if (error) throw error;
     return true;

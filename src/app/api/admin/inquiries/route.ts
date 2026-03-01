@@ -1,11 +1,11 @@
 import { NextRequest } from 'next/server';
 import { inquiryRepository } from '@/lib/repositories';
-import { inquiryUpdateSchema } from '@/lib/validation/schemas';
-import { apiSuccess, apiError, apiNotFound } from '@/lib/api/response';
+import { apiSuccess, apiError } from '@/lib/api/response';
+import { requireRole } from '@/lib/auth/supabase-auth';
 
-export async function GET(request: NextRequest) {
-  const role = request.headers.get('x-user-role');
-  if (role !== 'admin') return apiError('Forbidden', 403);
-  const inquiries = await inquiryRepository.findAll();
+export async function GET(_request: NextRequest) {
+  const auth = await requireRole('admin');
+  if (!auth.ok) return apiError(auth.status === 401 ? 'Unauthorized' : 'Forbidden', auth.status);
+  const inquiries = await inquiryRepository.findAll(auth.supabase);
   return apiSuccess(inquiries);
 }

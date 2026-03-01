@@ -27,7 +27,7 @@ export async function PUT(
   if (!parsed.success) {
     return apiError(parsed.error.errors.map((e) => e.message).join(', '));
   }
-  const category = await categoryRepository.update(id, parsed.data);
+  const category = await categoryRepository.update(id, parsed.data, auth.supabase);
   if (!category) return apiNotFound('Category not found');
   return apiSuccess(category);
 }
@@ -40,7 +40,7 @@ export async function DELETE(
   if (!auth.ok) return apiError(auth.status === 401 ? 'Unauthorized' : 'Forbidden', auth.status);
 
   const { id } = await params;
-  const deleted = await categoryRepository.delete(id);
+  const deleted = await categoryRepository.delete(id, auth.supabase);
   if (!deleted) return apiNotFound('Category not found');
   return apiSuccess({ deleted: true });
 }

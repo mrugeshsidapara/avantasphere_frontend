@@ -27,7 +27,7 @@ export async function PUT(
   if (!parsed.success) {
     return apiError(parsed.error.errors.map((e) => e.message).join(', '));
   }
-  const product = await productRepository.update(id, parsed.data);
+  const product = await productRepository.update(id, parsed.data, auth.supabase);
   if (!product) return apiNotFound('Product not found');
   return apiSuccess(product);
 }
@@ -40,7 +40,7 @@ export async function DELETE(
   if (!auth.ok) return apiError(auth.status === 401 ? 'Unauthorized' : 'Forbidden', auth.status);
 
   const { id } = await params;
-  const deleted = await productRepository.delete(id);
+  const deleted = await productRepository.delete(id, auth.supabase);
   if (!deleted) return apiNotFound('Product not found');
   return apiSuccess({ deleted: true });
 }

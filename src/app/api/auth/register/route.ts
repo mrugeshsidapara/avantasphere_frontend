@@ -3,6 +3,7 @@ import crypto from "crypto";
 import { buyerCreateSchema } from "@/lib/validation/schemas";
 import { apiSuccess, apiError } from "@/lib/api/response";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { buyerRepository, userRepository } from "@/lib/repositories";
 
 export async function POST(request: NextRequest) {
   const contentType = request.headers.get("content-type") ?? "";
@@ -38,11 +39,8 @@ export async function POST(request: NextRequest) {
     return apiError(error.message);
   }
 
-  // If email confirmations are disabled, a session may exist already.
-  // Ensure we have a profile row with buyer details.
   if (data.user) {
-    // persist profile details
-    await supabase.from("profiles").upsert(
+    await buyerRepository.upsertProfile(
       {
         id: data.user.id,
         username: parsed.data.username,
@@ -51,16 +49,15 @@ export async function POST(request: NextRequest) {
         country: parsed.data.country ?? null,
         role: "buyer",
       },
-      { onConflict: "id" },
+      supabase,
     );
-    // also store credentials in our app_users table (hashed with salt)
     const salt = crypto.randomBytes(16).toString("hex");
     const hash = crypto
       .createHash("sha256")
       .update(salt + parsed.data.password)
       .digest("hex");
     const pwHash = `${salt}:${hash}`;
-    await supabase.from("app_users").upsert(
+    await userRepository.upsert(
       {
         id: data.user.id,
         username: parsed.data.username,
@@ -68,7 +65,7 @@ export async function POST(request: NextRequest) {
         password_hash: pwHash,
         role: "buyer",
       },
-      { onConflict: "id" },
+      supabase,
     );
   }
 

@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { createSupabaseMiddlewareClient } from "@/lib/supabase/middleware";
+import { buyerRepository } from "@/lib/repositories";
 
 const BUYER_PATHS = ["/buyer"];
 const ADMIN_PATHS = ["/admin"];
@@ -24,7 +25,6 @@ function isBuyerLogin(pathname: string) {
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  // Skip API & static files
   if (
     pathname.startsWith("/api") ||
     pathname.startsWith("/_next") ||
@@ -33,38 +33,27 @@ export async function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
-  let response = NextResponse.next();
+  const response = NextResponse.next();
   const supabase = createSupabaseMiddlewareClient(request, response);
   const {
     data: { user },
   } = await supabase.auth.getUser();
 
-  // Allow login pages
   if (isAdminLogin(pathname) || isBuyerLogin(pathname)) {
     return response;
   }
 
-  // Admin routes
   if (isAdminPath(pathname)) {
     if (!user) return NextResponse.redirect(new URL("/admin/login", request.url));
-    const { data: profile } = await supabase
-      .from("profiles")
-      .select("role")
-      .eq("id", user.id)
-      .maybeSingle();
+    const profile = await buyerRepository.findById(user.id, supabase);
     if (profile?.role !== "admin") {
       return NextResponse.redirect(new URL("/admin/login", request.url));
     }
   }
 
-  // Buyer routes
   if (isBuyerPath(pathname)) {
     if (!user) return NextResponse.redirect(new URL("/buyer/login", request.url));
-    const { data: profile } = await supabase
-      .from("profiles")
-      .select("role")
-      .eq("id", user.id)
-      .maybeSingle();
+    const profile = await buyerRepository.findById(user.id, supabase);
     if (profile?.role !== "buyer") {
       return NextResponse.redirect(new URL("/buyer/login", request.url));
     }
