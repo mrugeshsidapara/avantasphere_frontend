@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { STATIC_CREDENTIALS } from "@/lib/constants/auth";
 import { ShieldCheck, ShoppingBag, ArrowRight } from "lucide-react";
 
 export default function LoginPage() {
@@ -64,7 +63,7 @@ export default function LoginPage() {
               </div>
 
               <div className="mt-3 text-xs text-gray-400">
-                Demo: {STATIC_CREDENTIALS.admin.email}
+                Use your admin email & password
               </div>
             </div>
           </Link>
@@ -106,7 +105,7 @@ export default function LoginPage() {
               </div>
 
               <div className="mt-3 text-xs text-gray-400">
-                Demo: {STATIC_CREDENTIALS.buyer.email}
+                Use your buyer email & password
               </div>
             </div>
           </Link>

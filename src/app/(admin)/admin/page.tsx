@@ -17,8 +17,89 @@ import {
   Activity,
   FileText,
 } from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 
 export default function AdminDashboardPage() {
+  const stats: Array<{ Icon: LucideIcon; value: string; label: string }> = [
+    { Icon: DollarSign, value: "$45.2K", label: "Revenue" },
+    { Icon: Package, value: "128", label: "Products" },
+    { Icon: Users, value: "45", label: "Buyers" },
+    { Icon: ShoppingCart, value: "82", label: "Orders" },
+    { Icon: MessageSquare, value: "18", label: "Inquiries" },
+  ];
+
+  const features: Array<{
+    Icon: LucideIcon;
+    title: string;
+    desc: string;
+    link: string;
+  }> = [
+    {
+      Icon: Folder,
+      title: "Categories",
+      desc: "Manage product categories",
+      link: "/admin/categories",
+    },
+    {
+      Icon: Boxes,
+      title: "Products",
+      desc: "Create and manage products",
+      link: "/admin/products",
+    },
+    { Icon: UserCheck, title: "Buyers", desc: "Manage buyer accounts", link: "/admin/buyers" },
+    {
+      Icon: ShoppingCart,
+      title: "Orders",
+      desc: "Process customer orders",
+      link: "/admin/orders",
+    },
+    {
+      Icon: MessageSquare,
+      title: "Inquiries",
+      desc: "Handle buyer inquiries",
+      link: "/admin/inquiries",
+    },
+    {
+      Icon: Award,
+      title: "Certificates",
+      desc: "Manage certifications",
+      link: "/admin/certificates",
+    },
+    { Icon: Home, title: "Homepage", desc: "Control homepage content", link: "/admin/homepage" },
+    {
+      Icon: Truck,
+      title: "Tracking",
+      desc: "Update shipment tracking",
+      link: "/admin/tracking",
+    },
+  ];
+
+  const recent: Array<{
+    Icon: LucideIcon;
+    title: string;
+    desc: string;
+    link: string;
+  }> = [
+    {
+      Icon: Activity,
+      title: "New Order Placed",
+      desc: "Order #ORD-2025-082",
+      link: "/admin/orders",
+    },
+    {
+      Icon: UserCheck,
+      title: "New Buyer Registered",
+      desc: "Buyer account created",
+      link: "/admin/buyers",
+    },
+    {
+      Icon: FileText,
+      title: "Product Updated",
+      desc: "PRD-125 modified",
+      link: "/admin/products",
+    },
+  ];
+
   return (
     <DashboardLayout role="admin" currentPage="Dashboard">
       <div className="min-h-screen bg-gradient-to-br from-white via-gray-50 to-white p-4 md:p-8">
@@ -32,13 +113,7 @@ export default function AdminDashboardPage() {
 
         {/* Stats – 5 in a Row */}
         <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-10">
-          {[
-            [DollarSign, "$45.2K", "Revenue"],
-            [Package, "128", "Products"],
-            [Users, "45", "Buyers"],
-            [ShoppingCart, "82", "Orders"],
-            [MessageSquare, "18", "Inquiries"],
-          ].map(([Icon, value, label], i) => (
+          {stats.map(({ Icon, value, label }, i) => (
             <div
               key={i}
               className="flex items-center gap-4 rounded-xl bg-white/60 backdrop-blur-md border border-white/30 p-4 shadow-sm transition hover:-translate-y-1 hover:shadow-md"
@@ -58,46 +133,7 @@ export default function AdminDashboardPage() {
         <div className="mt-14">
           <h2 className="text-lg font-semibold text-gray-900 mb-4">Feature</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {[
-              [
-                Folder,
-                "Categories",
-                "Manage product categories",
-                "/admin/categories",
-              ],
-              [
-                Boxes,
-                "Products",
-                "Create and manage products",
-                "/admin/products",
-              ],
-              [UserCheck, "Buyers", "Manage buyer accounts", "/admin/buyers"],
-              [
-                ShoppingCart,
-                "Orders",
-                "Process customer orders",
-                "/admin/orders",
-              ],
-              [
-                MessageSquare,
-                "Inquiries",
-                "Handle buyer inquiries",
-                "/admin/inquiries",
-              ],
-              [
-                Award,
-                "Certificates",
-                "Manage certifications",
-                "/admin/certificates",
-              ],
-              [Home, "Homepage", "Control homepage content", "/admin/homepage"],
-              [
-                Truck,
-                "Tracking",
-                "Update shipment tracking",
-                "/admin/tracking",
-              ],
-            ].map(([Icon, title, desc, link], i) => (
+            {features.map(({ Icon, title, desc, link }, i) => (
               <Link key={i} href={link}>
                 <div className="flex items-start gap-4 rounded-xl bg-white/60 backdrop-blur-md border border-white/30 p-5 shadow-sm transition hover:-translate-y-1 hover:shadow-md cursor-pointer">
                   <div className="w-10 h-10 bg-gradient-to-br from-[#3B82F6] to-[#0c1951] rounded-xl flex items-center justify-center">
@@ -119,26 +155,7 @@ export default function AdminDashboardPage() {
           </h2>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            {[
-              [
-                Activity,
-                "New Order Placed",
-                "Order #ORD-2025-082",
-                "/admin/orders",
-              ],
-              [
-                UserCheck,
-                "New Buyer Registered",
-                "Buyer account created",
-                "/admin/buyers",
-              ],
-              [
-                FileText,
-                "Product Updated",
-                "PRD-125 modified",
-                "/admin/products",
-              ],
-            ].map(([Icon, title, desc, link], i) => (
+            {recent.map(({ Icon, title, desc, link }, i) => (
               <Link key={i} href={link}>
                 <div className="flex items-start gap-4 rounded-xl bg-white/60 backdrop-blur-md border border-white/30 p-5 shadow-sm transition hover:-translate-y-1 hover:shadow-md cursor-pointer">
                   <div className="w-10 h-10 bg-gradient-to-br from-[#3B82F6] to-[#0c1951] rounded-xl flex items-center justify-center">

@@ -23,7 +23,7 @@ type Product = {
 
 /* ---------------- PAGE ---------------- */
 export default function ProductsPage() {
-  const { data, loading } = useProducts();
+  const { data, loading, error } = useProducts();
 
   const products: Product[] = Array.isArray(data) ? data : [];
 
@@ -44,11 +44,11 @@ export default function ProductsPage() {
   const deleteProduct = async (id: string) => {
     if (!confirm("Delete this product?")) return;
 
-    await fetch(`/api/admin/products/${id}`, {
+    await fetch(`/api/products/${id}`, {
       method: "DELETE",
     });
 
-    mutate("/api/admin/products");
+    mutate("/api/products");
   };
 
   return (
@@ -72,9 +72,12 @@ export default function ProductsPage() {
           </button>
         </div>
 
-        {/* Loading */}
+        {/* Loading and error */}
         {loading && (
           <div className="text-sm text-gray-500">Loading products…</div>
+        )}
+        {error && !loading && (
+          <div className="text-sm text-red-500">Error: {error}</div>
         )}
 
         {/* Desktop Table */}
@@ -190,7 +193,7 @@ export default function ProductsPage() {
         </div>
 
         {/* Empty */}
-        {!loading && products.length === 0 && (
+        {!loading && !error && products.length === 0 && (
           <div className="text-sm text-gray-500 mt-6">No products found.</div>
         )}
 
@@ -199,7 +202,7 @@ export default function ProductsPage() {
           <ProductModal
             product={selected}
             onClose={() => setModalOpen(false)}
-            onSaved={() => mutate("/api/admin/products")}
+            onSaved={() => mutate("/api/products")}
           />
         )}
       </div>

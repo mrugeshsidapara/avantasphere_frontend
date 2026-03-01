@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
+import { createSupabaseMiddlewareClient } from "@/lib/supabase/middleware";
 
 const BUYER_PATHS = ["/buyer"];
 const ADMIN_PATHS = ["/admin"];
@@ -20,7 +21,7 @@ function isBuyerLogin(pathname: string) {
   return pathname === "/buyer/login";
 }
 
-export function middleware(request: NextRequest) {
+export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   // Skip API & static files
@@ -32,34 +33,44 @@ export function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
+  let response = NextResponse.next();
+  const supabase = createSupabaseMiddlewareClient(request, response);
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
   // Allow login pages
   if (isAdminLogin(pathname) || isBuyerLogin(pathname)) {
-    return NextResponse.next();
+    return response;
   }
 
   // Admin routes
   if (isAdminPath(pathname)) {
-    const role =
-      request.cookies.get("user-role")?.value ??
-      request.headers.get("x-user-role");
-
-    if (role !== "admin") {
+    if (!user) return NextResponse.redirect(new URL("/admin/login", request.url));
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("role")
+      .eq("id", user.id)
+      .maybeSingle();
+    if (profile?.role !== "admin") {
       return NextResponse.redirect(new URL("/admin/login", request.url));
     }
   }
 
   // Buyer routes
   if (isBuyerPath(pathname)) {
-    const role =
-      request.cookies.get("user-role")?.value ??
-      request.headers.get("x-user-role");
-
-    if (role !== "buyer") {
+    if (!user) return NextResponse.redirect(new URL("/buyer/login", request.url));
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("role")
+      .eq("id", user.id)
+      .maybeSingle();
+    if (profile?.role !== "buyer") {
       return NextResponse.redirect(new URL("/buyer/login", request.url));
     }
   }
 
-  return NextResponse.next();
+  return response;
 }
 
 export const config = {

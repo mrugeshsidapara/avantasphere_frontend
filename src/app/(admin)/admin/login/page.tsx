@@ -18,16 +18,14 @@ import {
   UserCog,
 } from "lucide-react";
 import { api } from "@/lib/api/client";
-import { STATIC_CREDENTIALS } from "@/lib/constants/auth";
 
 interface LoginResponse {
   user: {
     id: string;
     email: string;
     role: "admin" | "buyer";
-    name: string;
+    name?: string;
   };
-  token: string;
 }
 
 const ADMIN_FEATURES = [
@@ -47,6 +45,8 @@ export default function AdminLoginPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [mounted, setMounted] = useState(false);
+  const [identifier, setIdentifier] = useState("");
+  const [password, setPassword] = useState("");
 
   useEffect(() => setMounted(true), []);
   if (!mounted) return null;
@@ -57,8 +57,8 @@ export default function AdminLoginPage() {
     setError("");
 
     const { data, error } = await api.post<LoginResponse>("/api/auth/login", {
-      email: STATIC_CREDENTIALS.admin.email,
-      password: STATIC_CREDENTIALS.admin.password,
+      identifier,
+      password,
     });
 
     if (error) {
@@ -141,12 +141,16 @@ export default function AdminLoginPage() {
             <form onSubmit={handleSubmit} className="space-y-6">
               <div className="mb-6">
                 <label className="block text-xs font-medium text-gray-600 mb-1">
-                  Email
+                  Email or Username
                 </label>
                 <input
-                  value={STATIC_CREDENTIALS.admin.email}
-                  disabled
-                  className="w-full rounded-lg border border-gray-300 bg-gray-100 px-4 py-2 text-sm font-mono"
+                  value={identifier}
+                  onChange={(e) => setIdentifier(e.target.value)}
+                  type="text"
+                  required
+                  className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-mono"
+                  placeholder="admin or admin@company.com"
+                  autoComplete="username"
                 />
               </div>
 
@@ -155,10 +159,13 @@ export default function AdminLoginPage() {
                   Password
                 </label>
                 <input
-                  value={STATIC_CREDENTIALS.admin.password}
-                  disabled
                   type="password"
-                  className="w-full rounded-lg border border-gray-300 bg-gray-100 px-4 py-2 text-sm font-mono"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                  className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-mono"
+                  placeholder="Your password"
+                  autoComplete="current-password"
                 />
               </div>
 

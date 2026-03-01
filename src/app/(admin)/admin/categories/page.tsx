@@ -16,7 +16,7 @@ type Category = {
   productCount: number;
   sortOrder: number;
   subcategories: string[];
-  image?: string | null;
+  image?: string;
 };
 
 /* ---------------- PAGE ---------------- */

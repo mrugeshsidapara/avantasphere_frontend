@@ -1,7 +1,5 @@
 import type { Inquiry } from "@/lib/types";
 
-import { inquiries } from "../../../data";
-
 export interface IInquiryRepository {
   findAll(): Promise<Inquiry[]>;
   findById(id: string): Promise<Inquiry | null>;
@@ -14,51 +12,126 @@ export interface IInquiryRepository {
 }
 
 export class InquiryRepository implements IInquiryRepository {
-  private data: Inquiry[] = [...inquiries];
-
   async findAll(): Promise<Inquiry[]> {
-    return [...this.data];
+    const { createSupabaseServerClient } =
+      await import("@/lib/supabase/server");
+    const supabase = await createSupabaseServerClient();
+    const { data, error } = await supabase.from("inquiries").select("*");
+    if (error) throw error;
+    return (data ?? []).map((i) => ({
+      id: i.id,
+      buyerId: i.buyer_id,
+      productId: i.product_id ?? "",
+      message: i.message ?? "",
+      status: i.status ?? "pending",
+      createdAt: i.created_at ?? "",
+      updatedAt: i.updated_at ?? "",
+    }));
   }
 
   async findById(id: string): Promise<Inquiry | null> {
-    return this.data.find((i) => i.id === id) ?? null;
+    const { createSupabaseServerClient } =
+      await import("@/lib/supabase/server");
+    const supabase = await createSupabaseServerClient();
+    const { data, error } = await supabase
+      .from("inquiries")
+      .select("*")
+      .eq("id", id)
+      .maybeSingle();
+    if (error) throw error;
+    if (!data) return null;
+    return {
+      id: data.id,
+      buyerId: data.buyer_id,
+      productId: data.product_id ?? "",
+      message: data.message ?? "",
+      status: data.status ?? "pending",
+      createdAt: data.created_at ?? "",
+      updatedAt: data.updated_at ?? "",
+    };
   }
 
   async findByBuyerId(buyerId: string): Promise<Inquiry[]> {
-    return this.data.filter((i) => i.buyerId === buyerId);
+    const { createSupabaseServerClient } =
+      await import("@/lib/supabase/server");
+    const supabase = await createSupabaseServerClient();
+    const { data, error } = await supabase
+      .from("inquiries")
+      .select("*")
+      .eq("buyer_id", buyerId);
+    if (error) throw error;
+    return (data ?? []).map((i) => ({
+      id: i.id,
+      buyerId: i.buyer_id,
+      productId: i.product_id ?? "",
+      message: i.message ?? "",
+      status: i.status ?? "pending",
+      createdAt: i.created_at ?? "",
+      updatedAt: i.updated_at ?? "",
+    }));
   }
 
   async create(
     input: Omit<Inquiry, "id" | "createdAt" | "updatedAt" | "status">,
   ): Promise<Inquiry> {
-    const id = `inq-${Date.now()}`;
-    const now = new Date().toISOString();
-    const inquiry: Inquiry = {
-      ...input,
-      id,
-      status: "pending",
-      createdAt: now,
-      updatedAt: now,
+    const { createSupabaseServerClient } =
+      await import("@/lib/supabase/server");
+    const supabase = await createSupabaseServerClient();
+    const { data, error } = await supabase
+      .from("inquiries")
+      .insert({
+        buyer_id: input.buyerId,
+        product_id: input.productId,
+        message: input.message,
+        status: "pending",
+      })
+      .select("*")
+      .single();
+    if (error) throw error;
+    return {
+      id: data.id,
+      buyerId: data.buyer_id,
+      productId: data.product_id ?? "",
+      message: data.message ?? "",
+      status: data.status ?? "pending",
+      createdAt: data.created_at ?? "",
+      updatedAt: data.updated_at ?? "",
     };
-    this.data.push(inquiry);
-    return inquiry;
   }
 
   async update(id: string, input: Partial<Inquiry>): Promise<Inquiry | null> {
-    const idx = this.data.findIndex((i) => i.id === id);
-    if (idx === -1) return null;
-    this.data[idx] = {
-      ...this.data[idx],
-      ...input,
-      updatedAt: new Date().toISOString(),
+    const { createSupabaseServerClient } =
+      await import("@/lib/supabase/server");
+    const supabase = await createSupabaseServerClient();
+    const patch: Record<string, unknown> = {};
+
+    if (input.message !== undefined) patch.message = input.message;
+    if (input.status !== undefined) patch.status = input.status;
+    const { data, error } = await supabase
+      .from("inquiries")
+      .update(patch)
+      .eq("id", id)
+      .select("*")
+      .maybeSingle();
+    if (error) throw error;
+    if (!data) return null;
+    return {
+      id: data.id,
+      buyerId: data.buyer_id,
+      productId: data.product_id ?? "",
+      message: data.message ?? "",
+      status: data.status ?? "pending",
+      createdAt: data.created_at ?? "",
+      updatedAt: data.updated_at ?? "",
     };
-    return this.data[idx];
   }
 
   async delete(id: string): Promise<boolean> {
-    const idx = this.data.findIndex((i) => i.id === id);
-    if (idx === -1) return false;
-    this.data.splice(idx, 1);
+    const { createSupabaseServerClient } =
+      await import("@/lib/supabase/server");
+    const supabase = await createSupabaseServerClient();
+    const { error } = await supabase.from("inquiries").delete().eq("id", id);
+    if (error) throw error;
     return true;
   }
 }

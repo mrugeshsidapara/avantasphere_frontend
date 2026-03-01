@@ -2,6 +2,7 @@ import { NextRequest } from "next/server";
 import { categoryRepository } from "@/lib/repositories";
 import { categoryCreateSchema } from "@/lib/validation/schemas";
 import { apiSuccess, apiError, apiNotFound } from "@/lib/api/response";
+import { requireRole } from "@/lib/auth/supabase-auth";
 
 export async function GET() {
   try {
@@ -14,6 +15,9 @@ export async function GET() {
 
 export async function POST(request: NextRequest) {
   try {
+    const auth = await requireRole("admin");
+    if (!auth.ok) return apiError(auth.status === 401 ? "Unauthorized" : "Forbidden", auth.status);
+
     const body = await request.json();
     const parsed = categoryCreateSchema.safeParse(body);
     if (!parsed.success) {

@@ -1,6 +1,4 @@
-import type { Certificate } from '@/lib/types';
-
-import { certificates } from '../../../data';
+import type { Certificate } from "@/lib/types";
 
 export interface ICertificateRepository {
   findAll(): Promise<Certificate[]>;
@@ -10,25 +8,95 @@ export interface ICertificateRepository {
 }
 
 export class CertificateRepository implements ICertificateRepository {
-  private data: Certificate[] = [...certificates];
-
   async findAll(): Promise<Certificate[]> {
-    return [...this.data].sort((a, b) => a.sortOrder - b.sortOrder);
+    const { createSupabaseServerClient } =
+      await import("@/lib/supabase/server");
+    const supabase = await createSupabaseServerClient();
+    const { data, error } = await supabase
+      .from("certificates")
+      .select("*")
+      .order("sort_order", { ascending: true });
+    if (error) throw error;
+    return (data ?? []).map((c) => ({
+      id: c.id,
+      name: c.name,
+      description: c.description ?? "",
+      image: c.image ?? "",
+      visible: c.visible ?? true,
+      sortOrder: c.sort_order ?? 999,
+    }));
   }
 
   async findVisible(): Promise<Certificate[]> {
-    return this.data.filter((c) => c.visible).sort((a, b) => a.sortOrder - b.sortOrder);
+    const { createSupabaseServerClient } =
+      await import("@/lib/supabase/server");
+    const supabase = await createSupabaseServerClient();
+    const { data, error } = await supabase
+      .from("certificates")
+      .select("*")
+      .eq("visible", true)
+      .order("sort_order", { ascending: true });
+    if (error) throw error;
+    return (data ?? []).map((c) => ({
+      id: c.id,
+      name: c.name,
+      description: c.description ?? "",
+      image: c.image ?? "",
+      visible: c.visible ?? true,
+      sortOrder: c.sort_order ?? 999,
+    }));
   }
 
   async findById(id: string): Promise<Certificate | null> {
-    return this.data.find((c) => c.id === id) ?? null;
+    const { createSupabaseServerClient } =
+      await import("@/lib/supabase/server");
+    const supabase = await createSupabaseServerClient();
+    const { data, error } = await supabase
+      .from("certificates")
+      .select("*")
+      .eq("id", id)
+      .maybeSingle();
+    if (error) throw error;
+    if (!data) return null;
+    return {
+      id: data.id,
+      name: data.name,
+      description: data.description ?? "",
+      image: data.image ?? "",
+      visible: data.visible ?? true,
+      sortOrder: data.sort_order ?? 999,
+    };
   }
 
-  async update(id: string, input: Partial<Certificate>): Promise<Certificate | null> {
-    const idx = this.data.findIndex((c) => c.id === id);
-    if (idx === -1) return null;
-    this.data[idx] = { ...this.data[idx], ...input };
-    return this.data[idx];
+  async update(
+    id: string,
+    input: Partial<Certificate>,
+  ): Promise<Certificate | null> {
+    const { createSupabaseServerClient } =
+      await import("@/lib/supabase/server");
+    const supabase = await createSupabaseServerClient();
+    const patch: Record<string, unknown> = {};
+    if (input.name !== undefined) patch.name = input.name;
+    if (input.description !== undefined) patch.description = input.description;
+    if (input.image !== undefined) patch.image = input.image;
+    if (input.visible !== undefined) patch.visible = input.visible;
+    if (input.sortOrder !== undefined) patch.sort_order = input.sortOrder;
+    const { data, error } = await supabase
+      .from("certificates")
+      .update(patch)
+      .eq("id", id)
+      .select("*")
+      .maybeSingle();
+    if (error) throw error;
+    if (!data) return null;
+    return {
+      id: data.id,
+      name: data.name,
+      description: data.description ?? "",
+      image: data.image ?? "",
+      visible: data.visible ?? true,
+      sortOrder: data.sort_order ?? 999,
+    };
   }
 }
 

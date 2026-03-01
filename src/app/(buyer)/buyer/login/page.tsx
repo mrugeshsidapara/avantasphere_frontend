@@ -4,16 +4,14 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { api } from "@/lib/api/client";
-import { STATIC_CREDENTIALS } from "@/lib/constants/auth";
 
 interface LoginResponse {
   user: {
     id: string;
     email: string;
     role: "admin" | "buyer";
-    name: string;
+    name?: string;
   };
-  token: string;
 }
 
 const BUYER_FEATURES = [
@@ -31,6 +29,8 @@ export default function BuyerLoginPage() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
+  const [identifier, setIdentifier] = useState("");
+  const [password, setPassword] = useState("");
 
   useEffect(() => {
     setIsMounted(true);
@@ -45,8 +45,8 @@ export default function BuyerLoginPage() {
       const { data, error: err } = await api.post<LoginResponse>(
         "/api/auth/login",
         {
-          email: STATIC_CREDENTIALS.buyer.email,
-          password: STATIC_CREDENTIALS.buyer.password,
+          identifier,
+          password,
         },
       );
 
@@ -141,36 +141,36 @@ export default function BuyerLoginPage() {
                 </div>
               )}
 
-              {/* Static Form */}
+              {/* Login Form */}
               <form onSubmit={handleSubmit} className="space-y-6">
-                <div className="bg-green-50 border border-green-200 rounded-lg p-4">
-                  <p className="text-xs text-gray-600 mb-2 font-semibold">
-                    Demo Credentials (Read-Only):
-                  </p>
-                  <div className="space-y-2">
-                    <div>
-                      <label className="block text-xs font-medium text-gray-700 mb-1">
-                        Email
-                      </label>
-                      <input
-                        type="email"
-                        value={STATIC_CREDENTIALS.buyer.email}
-                        disabled
-                        className="w-full px-4 py-2 rounded-lg border-2 border-green-300 bg-white text-gray-900 font-mono text-sm"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-xs font-medium text-gray-700 mb-1">
-                        Password
-                      </label>
-                      <input
-                        type="password"
-                        value={STATIC_CREDENTIALS.buyer.password}
-                        disabled
-                        className="w-full px-4 py-2 rounded-lg border-2 border-green-300 bg-white text-gray-900 font-mono text-sm"
-                      />
-                    </div>
-                  </div>
+                <div>
+                  <label className="block text-xs font-medium text-gray-700 mb-1">
+                    Email or Username
+                  </label>
+                  <input
+                    type="text"
+                    value={identifier}
+                    onChange={(e) => setIdentifier(e.target.value)}
+                    required
+                    className="w-full px-4 py-2 rounded-lg border-2 border-green-300 bg-white text-gray-900 font-mono text-sm"
+                    placeholder="you@example.com or user123"
+                    autoComplete="username"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-medium text-gray-700 mb-1">
+                    Password
+                  </label>
+                  <input
+                    type="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    required
+                    className="w-full px-4 py-2 rounded-lg border-2 border-green-300 bg-white text-gray-900 font-mono text-sm"
+                    placeholder="Your password"
+                    autoComplete="current-password"
+                  />
                 </div>
 
                 {/* Submit Button */}

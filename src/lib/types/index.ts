@@ -39,15 +39,23 @@ export interface Buyer {
   name: string;
   company: string;
   country: string;
-  role: 'buyer';
+  role: "buyer";
   createdAt: string;
   updatedAt: string;
+}
+
+export interface AppUser {
+  id: string;
+  username: string;
+  email: string;
+  role: "admin" | "buyer" | "public";
+  createdAt: string;
 }
 
 export interface Admin {
   id: string;
   email: string;
-  role: 'admin';
+  role: "admin";
   createdAt: string;
   updatedAt: string;
 }
@@ -70,14 +78,19 @@ export interface OrderItem {
   unitPrice: number;
 }
 
-export type OrderStatus = 'pending' | 'processing' | 'shipped' | 'delivered' | 'cancelled';
+export type OrderStatus =
+  | "pending"
+  | "processing"
+  | "shipped"
+  | "delivered"
+  | "cancelled";
 
 export interface Inquiry {
   id: string;
   buyerId: string;
   productId: string;
   message: string;
-  status: 'pending' | 'responded' | 'closed';
+  status: "pending" | "responded" | "closed";
   createdAt: string;
   updatedAt: string;
 }
@@ -86,4 +99,4 @@ export interface HomepageSections {
   [key: string]: { enabled: boolean; sortOrder: number };
 }
 
-export type UserRole = 'admin' | 'buyer';
+export type UserRole = "admin" | "buyer";

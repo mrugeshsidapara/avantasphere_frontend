@@ -81,6 +81,20 @@ export default function RegisterPage() {
                 action="/api/auth/register"
                 method="POST"
               >
+                {/* Username Field */}
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    Username <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    name="username"
+                    placeholder="yourname"
+                    className="w-full px-4 py-3 rounded-lg border-2 border-gray-200 bg-gray-50 focus:border-green-500 focus:outline-none transition-colors"
+                    required
+                  />
+                </div>
+
                 {/* Email Field */}
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 mb-2">
@@ -132,6 +146,22 @@ export default function RegisterPage() {
                     name="country"
                     placeholder="United States"
                     className="w-full px-4 py-3 rounded-lg border-2 border-gray-200 bg-gray-50 focus:border-green-500 focus:outline-none transition-colors"
+                  />
+                </div>
+
+                {/* Password Field */}
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    Password <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="password"
+                    name="password"
+                    placeholder="Minimum 8 characters"
+                    className="w-full px-4 py-3 rounded-lg border-2 border-gray-200 bg-gray-50 focus:border-green-500 focus:outline-none transition-colors"
+                    minLength={8}
+                    required
+                    autoComplete="new-password"
                   />
                 </div>
 

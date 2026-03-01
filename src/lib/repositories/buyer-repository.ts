@@ -1,56 +1,146 @@
-import type { Buyer } from '@/lib/types';
-
-import { buyers } from '../../../data';
+import type { Buyer } from "@/lib/types";
 
 export interface IBuyerRepository {
   findAll(): Promise<Buyer[]>;
   findById(id: string): Promise<Buyer | null>;
   findByEmail(email: string): Promise<Buyer | null>;
-  create(data: Omit<Buyer, 'id' | 'role' | 'createdAt' | 'updatedAt'>): Promise<Buyer>;
+  create(
+    data: Omit<Buyer, "id" | "role" | "createdAt" | "updatedAt">,
+  ): Promise<Buyer>;
   update(id: string, data: Partial<Buyer>): Promise<Buyer | null>;
   delete(id: string): Promise<boolean>;
 }
 
 export class BuyerRepository implements IBuyerRepository {
-  private data: Buyer[] = [...buyers];
-
   async findAll(): Promise<Buyer[]> {
-    return [...this.data];
+    const { createSupabaseServerClient } =
+      await import("@/lib/supabase/server");
+    const supabase = await createSupabaseServerClient();
+    const { data, error } = await supabase.from("profiles").select("*");
+    if (error) throw error;
+    return (data ?? []).map((p) => ({
+      id: p.id,
+      email: p.email ?? "",
+      name: p.full_name ?? "",
+      company: p.company_name ?? "",
+      country: p.country ?? "",
+      role: p.role ?? "buyer",
+      createdAt: p.created_at ?? "",
+      updatedAt: p.created_at ?? "",
+    }));
   }
 
   async findById(id: string): Promise<Buyer | null> {
-    return this.data.find((b) => b.id === id) ?? null;
+    const { createSupabaseServerClient } =
+      await import("@/lib/supabase/server");
+    const supabase = await createSupabaseServerClient();
+    const { data, error } = await supabase
+      .from("profiles")
+      .select("*")
+      .eq("id", id)
+      .maybeSingle();
+    if (error) throw error;
+    if (!data) return null;
+    return {
+      id: data.id,
+      name: data.full_name ?? "",
+      email: data.email ?? "",
+      company: data.company_name ?? "",
+      country: data.country ?? "",
+      role: data.role ?? "buyer",
+      createdAt: data.created_at ?? "",
+      updatedAt: data.updated_at ?? "",
+    };
   }
 
   async findByEmail(email: string): Promise<Buyer | null> {
-    return this.data.find((b) => b.email.toLowerCase() === email.toLowerCase()) ?? null;
+    const { createSupabaseServerClient } =
+      await import("@/lib/supabase/server");
+    const supabase = await createSupabaseServerClient();
+    const { data, error } = await supabase
+      .from("profiles")
+      .select("*")
+      .eq("email", email)
+      .maybeSingle();
+    if (error) throw error;
+    if (!data) return null;
+    return {
+      id: data.id,
+      name: data.full_name ?? "",
+      email: data.email ?? "",
+      company: data.company_name ?? "",
+      country: data.country ?? "",
+      role: data.role ?? "buyer",
+      createdAt: data.created_at ?? "",
+      updatedAt: data.created_at ?? "",
+    };
   }
 
-  async create(input: Omit<Buyer, 'id' | 'role' | 'createdAt' | 'updatedAt'>): Promise<Buyer> {
-    const id = `buyer-${Date.now()}`;
-    const now = new Date().toISOString();
-    const buyer: Buyer = {
-      ...input,
-      id,
-      role: 'buyer',
-      createdAt: now,
-      updatedAt: now,
+  async create(
+    input: Omit<Buyer, "id" | "role" | "createdAt" | "updatedAt">,
+  ): Promise<Buyer> {
+    const { createSupabaseServerClient } =
+      await import("@/lib/supabase/server");
+    const supabase = await createSupabaseServerClient();
+    const { data, error } = await supabase
+      .from("profiles")
+      .insert({
+        full_name: input.name,
+        email: input.email,
+        company_name: input.company,
+        country: input.country,
+        role: "buyer",
+      })
+      .select("*")
+      .single();
+    if (error) throw error;
+    return {
+      id: data.id,
+      name: data.full_name ?? "",
+      email: data.email ?? "",
+      company: data.company_name ?? "",
+      country: data.country ?? "",
+      role: data.role ?? "buyer",
+      createdAt: data.created_at ?? "",
+      updatedAt: data.updated_at ?? "",
     };
-    this.data.push(buyer);
-    return buyer;
   }
 
   async update(id: string, input: Partial<Buyer>): Promise<Buyer | null> {
-    const idx = this.data.findIndex((b) => b.id === id);
-    if (idx === -1) return null;
-    this.data[idx] = { ...this.data[idx], ...input, updatedAt: new Date().toISOString() };
-    return this.data[idx];
+    const { createSupabaseServerClient } =
+      await import("@/lib/supabase/server");
+    const supabase = await createSupabaseServerClient();
+    const patch: Record<string, unknown> = {};
+    if (input.name) patch.full_name = input.name;
+    if (input.email) patch.email = input.email;
+    if (input.company) patch.company_name = input.company;
+    if (input.country) patch.country = input.country;
+    const { data, error } = await supabase
+      .from("profiles")
+      .update(patch)
+      .eq("id", id)
+      .select("*")
+      .maybeSingle();
+    if (error) throw error;
+    if (!data) return null;
+    return {
+      id: data.id,
+      name: data.full_name ?? "",
+      email: data.email ?? "",
+      company: data.company_name ?? "",
+      country: data.country ?? "",
+      role: data.role ?? "buyer",
+      createdAt: data.created_at ?? "",
+      updatedAt: data.updated_at ?? "",
+    };
   }
 
   async delete(id: string): Promise<boolean> {
-    const idx = this.data.findIndex((b) => b.id === id);
-    if (idx === -1) return false;
-    this.data.splice(idx, 1);
+    const { createSupabaseServerClient } =
+      await import("@/lib/supabase/server");
+    const supabase = await createSupabaseServerClient();
+    const { error } = await supabase.from("profiles").delete().eq("id", id);
+    if (error) throw error;
     return true;
   }
 }

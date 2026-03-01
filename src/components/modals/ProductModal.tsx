@@ -81,7 +81,7 @@ export default function ProductModal({
 
   /* ---------------- SAVE ---------------- */
   async function save() {
-    await fetch("/api/admin/products", {
+    await fetch(product?.id ? `/api/products/${product.id}` : "/api/products", {
       method: product ? "PUT" : "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(form),

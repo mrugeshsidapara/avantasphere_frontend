@@ -1,10 +1,10 @@
-import { z } from 'zod';
+import { z } from "zod";
 
 // Zod must be installed
 // npm install zod
 
 export const categoryCreateSchema = z.object({
-  name: z.string().min(1, 'Name is required'),
+  name: z.string().min(1, "Name is required"),
   slug: z.string().min(1).optional(),
   description: z.string().optional(),
   image: z.string().optional(),
@@ -15,8 +15,8 @@ export const categoryCreateSchema = z.object({
 export const categoryUpdateSchema = categoryCreateSchema.partial();
 
 export const productCreateSchema = z.object({
-  categoryId: z.string().min(1, 'Category is required'),
-  name: z.string().min(1, 'Name is required'),
+  categoryId: z.string().min(1, "Category is required"),
+  name: z.string().min(1, "Name is required"),
   slug: z.string().min(1).optional(),
   description: z.string().optional(),
   images: z.array(z.string()).optional(),
@@ -42,11 +42,12 @@ export const homepageSectionUpdateSchema = z.object({
 });
 
 export const buyerCreateSchema = z.object({
+  username: z.string().min(3, "Username is required"),
   email: z.string().email(),
   name: z.string().min(1),
   company: z.string().optional(),
   country: z.string().optional(),
-  password: z.string().min(8).optional(),
+  password: z.string().min(8),
 });
 
 export const buyerUpdateSchema = z.object({
@@ -56,7 +57,9 @@ export const buyerUpdateSchema = z.object({
 });
 
 export const orderUpdateSchema = z.object({
-  status: z.enum(['pending', 'processing', 'shipped', 'delivered', 'cancelled']).optional(),
+  status: z
+    .enum(["pending", "processing", "shipped", "delivered", "cancelled"])
+    .optional(),
   shippingStatus: z.string().optional(),
   trackingNumber: z.string().nullable().optional(),
 });
@@ -67,10 +70,10 @@ export const inquiryCreateSchema = z.object({
 });
 
 export const inquiryUpdateSchema = z.object({
-  status: z.enum(['pending', 'responded', 'closed']).optional(),
+  status: z.enum(["pending", "responded", "closed"]).optional(),
 });
 
 export const loginSchema = z.object({
-  email: z.string().email(),
+  identifier: z.string().min(1), // email or username
   password: z.string().min(1),
 });

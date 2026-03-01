@@ -3,8 +3,6 @@
 import { useState } from "react";
 import Modal from "./Modal";
 import { Category } from "@/app/lib/models/category";
-import { writeFile } from "fs/promises";
-import path from "path";
 
 export default function CategoryModal({
   category,
@@ -20,12 +18,12 @@ export default function CategoryModal({
   const [image, setImage] = useState<string | null>(category?.image || null);
   const [uploading, setUploading] = useState(false);
   const save = async () => {
-    await fetch("/api/categories", {
+    await fetch(category ? `/api/categories/${category.id}` : "/api/categories", {
       method: category ? "PUT" : "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        id: category?.id,
         name,
+        slug: category?.slug ?? name.toLowerCase().replace(/\s+/g, "-"),
         description,
         image,
       }),

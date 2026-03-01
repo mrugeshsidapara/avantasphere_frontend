@@ -1,7 +1,5 @@
-"use client";
+import ExportProductsPage from "@/app/pages/ExportProductsPage";
 
-import { ExportProductsPage } from "@/app/pages/ExportProductsPage";
-
-export default function ProductsPage() {
+export default async function ProductsPage() {
   return <ExportProductsPage />;
 }

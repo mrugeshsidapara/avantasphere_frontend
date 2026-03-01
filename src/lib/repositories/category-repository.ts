@@ -1,54 +1,164 @@
-import type { Category } from '@/lib/types';
-
-// Static data - replace with Prisma/database when ready
-import { categories } from '../../../data';
+import type { Category } from "@/lib/types";
 
 export interface ICategoryRepository {
   findAll(): Promise<Category[]>;
   findById(id: string): Promise<Category | null>;
   findBySlug(slug: string): Promise<Category | null>;
-  create(data: Omit<Category, 'id'>): Promise<Category>;
+  create(data: Omit<Category, "id">): Promise<Category>;
   update(id: string, data: Partial<Category>): Promise<Category | null>;
   delete(id: string): Promise<boolean>;
 }
 
 export class CategoryRepository implements ICategoryRepository {
-  private data: Category[] = [...categories];
-
   async findAll(): Promise<Category[]> {
-    return [...this.data].sort((a, b) => a.sortOrder - b.sortOrder);
+    const { createSupabaseServerClient } =
+      await import("@/lib/supabase/server");
+    const supabase = await createSupabaseServerClient();
+    const { data, error } = await supabase
+      .from("categories")
+      .select(
+        "id,name,slug,description,image,product_count,subcategories,sort_order",
+      )
+      .order("sort_order", { ascending: true });
+    if (error) throw error;
+    return (data ?? []).map((c) => ({
+      id: c.id,
+      name: c.name,
+      slug: c.slug,
+      description: c.description ?? "",
+      image: c.image ?? "",
+      productCount: c.product_count ?? 0,
+      subcategories: (c.subcategories as unknown as string[]) ?? [],
+      sortOrder: c.sort_order ?? 999,
+    }));
   }
 
   async findById(id: string): Promise<Category | null> {
-    return this.data.find((c) => c.id === id) ?? null;
+    const { createSupabaseServerClient } =
+      await import("@/lib/supabase/server");
+    const supabase = await createSupabaseServerClient();
+    const { data, error } = await supabase
+      .from("categories")
+      .select(
+        "id,name,slug,description,image,product_count,subcategories,sort_order",
+      )
+      .eq("id", id)
+      .maybeSingle();
+    if (error) throw error;
+    if (!data) return null;
+    return {
+      id: data.id,
+      name: data.name,
+      slug: data.slug,
+      description: data.description ?? "",
+      image: data.image ?? "",
+      productCount: data.product_count ?? 0,
+      subcategories: (data.subcategories as unknown as string[]) ?? [],
+      sortOrder: data.sort_order ?? 999,
+    };
   }
 
   async findBySlug(slug: string): Promise<Category | null> {
-    return this.data.find((c) => c.slug === slug) ?? null;
+    const { createSupabaseServerClient } =
+      await import("@/lib/supabase/server");
+    const supabase = await createSupabaseServerClient();
+    const { data, error } = await supabase
+      .from("categories")
+      .select(
+        "id,name,slug,description,image,product_count,subcategories,sort_order",
+      )
+      .eq("slug", slug)
+      .maybeSingle();
+    if (error) throw error;
+    if (!data) return null;
+    return {
+      id: data.id,
+      name: data.name,
+      slug: data.slug,
+      description: data.description ?? "",
+      image: data.image ?? "",
+      productCount: data.product_count ?? 0,
+      subcategories: (data.subcategories as unknown as string[]) ?? [],
+      sortOrder: data.sort_order ?? 999,
+    };
   }
 
-  async create(input: Omit<Category, 'id'>): Promise<Category> {
-    const id = input.slug || input.name.toLowerCase().replace(/\s+/g, '-');
-    const category: Category = {
-      ...input,
-      id,
-      productCount: input.productCount ?? 0,
+  async create(input: Omit<Category, "id">): Promise<Category> {
+    const { createSupabaseServerClient } =
+      await import("@/lib/supabase/server");
+    const supabase = await createSupabaseServerClient();
+    const { data, error } = await supabase
+      .from("categories")
+      .insert({
+        name: input.name,
+        slug: input.slug,
+        description: input.description ?? "",
+        image: input.image ?? null,
+        product_count: input.productCount ?? 0,
+        subcategories: input.subcategories ?? [],
+        sort_order: input.sortOrder ?? 999,
+        is_active: true,
+      })
+      .select(
+        "id,name,slug,description,image,product_count,subcategories,sort_order",
+      )
+      .single();
+    if (error) throw error;
+    return {
+      id: data.id,
+      name: data.name,
+      slug: data.slug,
+      description: data.description ?? "",
+      image: data.image ?? "",
+      productCount: data.product_count ?? 0,
+      subcategories: (data.subcategories as unknown as string[]) ?? [],
+      sortOrder: data.sort_order ?? 999,
     };
-    this.data.push(category);
-    return category;
   }
 
   async update(id: string, input: Partial<Category>): Promise<Category | null> {
-    const idx = this.data.findIndex((c) => c.id === id);
-    if (idx === -1) return null;
-    this.data[idx] = { ...this.data[idx], ...input };
-    return this.data[idx];
+    const { createSupabaseServerClient } =
+      await import("@/lib/supabase/server");
+    const supabase = await createSupabaseServerClient();
+    const patch: Record<string, unknown> = {};
+    if (input.name !== undefined) patch.name = input.name;
+    if (input.slug !== undefined) patch.slug = input.slug;
+    if (input.description !== undefined) patch.description = input.description;
+    if (input.image !== undefined) patch.image = input.image;
+    if (input.productCount !== undefined)
+      patch.product_count = input.productCount;
+    if (input.subcategories !== undefined)
+      patch.subcategories = input.subcategories;
+    if (input.sortOrder !== undefined) patch.sort_order = input.sortOrder;
+
+    const { data, error } = await supabase
+      .from("categories")
+      .update(patch)
+      .eq("id", id)
+      .select(
+        "id,name,slug,description,image,product_count,subcategories,sort_order",
+      )
+      .maybeSingle();
+    if (error) throw error;
+    if (!data) return null;
+    return {
+      id: data.id,
+      name: data.name,
+      slug: data.slug,
+      description: data.description ?? "",
+      image: data.image ?? "",
+      productCount: data.product_count ?? 0,
+      subcategories: (data.subcategories as unknown as string[]) ?? [],
+      sortOrder: data.sort_order ?? 999,
+    };
   }
 
   async delete(id: string): Promise<boolean> {
-    const idx = this.data.findIndex((c) => c.id === id);
-    if (idx === -1) return false;
-    this.data.splice(idx, 1);
+    const { createSupabaseServerClient } =
+      await import("@/lib/supabase/server");
+    const supabase = await createSupabaseServerClient();
+    const { error } = await supabase.from("categories").delete().eq("id", id);
+    if (error) throw error;
     return true;
   }
 }
