@@ -18,16 +18,20 @@ export default function CategoryModal({
   const [image, setImage] = useState<string | null>(category?.image || null);
   const [uploading, setUploading] = useState(false);
   const save = async () => {
-    await fetch(category ? `/api/categories/${category.id}` : "/api/categories", {
-      method: category ? "PUT" : "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        name,
-        slug: category?.slug ?? name.toLowerCase().replace(/\s+/g, "-"),
-        description,
-        image,
-      }),
-    });
+    console.log("Saving category with data:", { name, description, image });
+    await fetch(
+      category ? `/api/categories/${category.id}` : "/api/categories",
+      {
+        method: category ? "PUT" : "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name,
+          slug: category?.slug ?? name.toLowerCase().replace(/\s+/g, "-"),
+          description,
+          image,
+        }),
+      },
+    );
 
     onClose();
     onSaved();
@@ -71,6 +75,11 @@ export default function CategoryModal({
             const file = e.target.files[0];
             const formData = new FormData();
             formData.append("file", file);
+            formData.append("type", "categories");
+            formData.append(
+              "name",
+              `${category?.slug ?? name.toLowerCase().replace(/\s+/g, "-")}${file.name.substring(file.name.lastIndexOf("."))}`,
+            );
 
             setUploading(true);
 
@@ -78,9 +87,8 @@ export default function CategoryModal({
               method: "POST",
               body: formData,
             });
-
             const data = await res.json();
-            setImage(data.url);
+            setImage(data.data.url);
             setUploading(false);
           }}
           className="block w-full text-sm"

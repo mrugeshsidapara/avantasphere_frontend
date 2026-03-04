@@ -20,11 +20,14 @@ import {
 import { api } from "@/lib/api/client";
 
 interface LoginResponse {
-  user: {
-    id: string;
-    email: string;
-    role: "admin" | "buyer";
-    name?: string;
+  success: boolean;
+  data: {
+    user: {
+      id: string;
+      email: string;
+      role: "admin" | "buyer";
+      username?: string;
+    };
   };
 }
 
@@ -56,18 +59,18 @@ export default function AdminLoginPage() {
     setLoading(true);
     setError("");
 
-    const { data, error } = await api.post<LoginResponse>("/api/auth/login", {
+    const response = await api.post("/api/auth/login", {
       identifier,
       password,
     });
 
-    if (error) {
-      setError(error);
+    if (response.error) {
+      setError(response.error);
       setLoading(false);
       return;
     }
-
-    if (data?.user?.role === "admin") {
+    const user = response.data?.user;
+    if (user?.role === "admin") {
       router.push("/admin");
     } else {
       setError("Unauthorized account type");

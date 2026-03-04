@@ -5,20 +5,19 @@ import { api } from "@/lib/api/client";
 import { Category } from "../types";
 
 export function useCategories() {
-  const [data, setData] =
-    useState<Awaited<ReturnType<typeof api.get>>["data"]>(null);
-  const [error, setError] = useState<string | null>(null);
+  const [data, setData] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    api.get<Category[]>("/api/categories").then(({ data: d, error: e }) => {
-      setData(d ?? null);
-      setError(e ?? null);
-      setLoading(false);
-    });
+    fetch("/api/categories")
+      .then((res) => res.json())
+      .then((res) => {
+        setData(res.data || []);
+        setLoading(false);
+      });
   }, []);
 
-  return { data, error, loading };
+  return { data, loading };
 }
 
 export function useCategory(id: string | null) {

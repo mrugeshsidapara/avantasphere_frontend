@@ -6,8 +6,15 @@ export interface ICategoryRepository {
   findAll(): Promise<Category[]>;
   findById(id: string): Promise<Category | null>;
   findBySlug(slug: string): Promise<Category | null>;
-  create(data: Omit<Category, "id">, client?: SupabaseClient): Promise<Category>;
-  update(id: string, data: Partial<Category>, client?: SupabaseClient): Promise<Category | null>;
+  create(
+    data: Omit<Category, "id">,
+    client?: SupabaseClient,
+  ): Promise<Category>;
+  update(
+    id: string,
+    data: Partial<Category>,
+    client?: SupabaseClient,
+  ): Promise<Category | null>;
   delete(id: string, client?: SupabaseClient): Promise<boolean>;
 }
 
@@ -79,7 +86,11 @@ export class CategoryRepository implements ICategoryRepository {
     };
   }
 
-  async create(input: Omit<Category, "id">, client?: SupabaseClient): Promise<Category> {
+  async create(
+    input: Omit<Category, "id">,
+    client?: SupabaseClient,
+  ): Promise<Category> {
+    console.log("Creating category with input:", input);
     const supabase = client ?? getSupabaseBackendClient();
     const { data, error } = await supabase
       .from("categories")
@@ -110,7 +121,11 @@ export class CategoryRepository implements ICategoryRepository {
     };
   }
 
-  async update(id: string, input: Partial<Category>, client?: SupabaseClient): Promise<Category | null> {
+  async update(
+    id: string,
+    input: Partial<Category>,
+    client?: SupabaseClient,
+  ): Promise<Category | null> {
     const supabase = client ?? getSupabaseBackendClient();
     const patch: Record<string, unknown> = {};
     if (input.name !== undefined) patch.name = input.name;

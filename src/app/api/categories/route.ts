@@ -6,7 +6,6 @@ import { requireRole } from "@/lib/auth/supabase-auth";
 
 export async function GET() {
   try {
-    debugger;
     const categories = await categoryRepository.findAll();
     return apiSuccess(categories);
   } catch (e) {
