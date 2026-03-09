@@ -21,6 +21,10 @@ import {
   User,
   ChevronLeft,
   ChevronRight,
+  LineChart,
+  Factory,
+  Boxes,
+  Settings,
 } from "lucide-react";
 
 interface DashboardLayoutProps {
@@ -29,24 +33,45 @@ interface DashboardLayoutProps {
   currentPage: string;
 }
 
+// ADMIN MENU
 const adminNavItems = [
   { label: "Dashboard", href: "/admin", icon: LayoutDashboard },
-  { label: "Categories", href: "/admin/categories", icon: Folder },
-  { label: "Products", href: "/admin/products", icon: Package },
+  { label: "Analytics", href: "/admin/analytics", icon: LineChart },
+  { label: "Leads", href: "/admin/leads", icon: Users },
+  { label: "RFQ Requests", href: "/admin/rfq", icon: MessageSquare },
   { label: "Buyers", href: "/admin/buyers", icon: Users },
+  { label: "Manufacturers", href: "/admin/manufacturers", icon: Factory },
+  { label: "Products", href: "/admin/products", icon: Package },
+  { label: "Categories", href: "/admin/categories", icon: Folder },
   { label: "Orders", href: "/admin/orders", icon: ShoppingCart },
-  { label: "Inquiries", href: "/admin/inquiries", icon: MessageSquare },
+  { label: "Production", href: "/admin/production", icon: Factory },
+  { label: "Shipments", href: "/admin/shipments", icon: Truck },
+  { label: "Invoices", href: "/admin/invoices", icon: FileText },
+  { label: "Containers", href: "/admin/containers", icon: Boxes },
+  {
+    label: "Profit Analytics",
+    href: "/admin/profit-analytics",
+    icon: LineChart,
+  },
+  { label: "Documents", href: "/admin/documents", icon: FileText },
+  { label: "Website CMS", href: "/admin/website-cms", icon: Home },
+  { label: "Users", href: "/admin/users", icon: Users },
+  { label: "Settings", href: "/admin/settings", icon: Settings },
   { label: "Certificates", href: "/admin/certificates", icon: Award },
-  { label: "Homepage", href: "/admin/homepage", icon: Home },
   { label: "Tracking", href: "/admin/tracking", icon: Truck },
+  { label: "Homepage", href: "/admin/homepage", icon: Home },
 ];
 
+// BUYER MENU
 const buyerNavItems = [
   { label: "Dashboard", href: "/buyer/dashboard", icon: LayoutDashboard },
-  { label: "Inquiries", href: "/buyer/inquiries", icon: MessageSquare },
-  { label: "Orders", href: "/buyer/orders", icon: ShoppingCart },
-  { label: "Documents", href: "/buyer/documents", icon: FileText },
+  { label: "Browse Products", href: "/buyer/products", icon: Package },
+  { label: "My RFQs", href: "/buyer/rfq", icon: FileText },
+  { label: "My Orders", href: "/buyer/orders", icon: ShoppingCart },
+  { label: "Shipment Tracking", href: "/buyer/shipments", icon: Truck },
   { label: "Invoices", href: "/buyer/invoices", icon: FileText },
+  { label: "Documents", href: "/buyer/documents", icon: FileText },
+  { label: "Support", href: "/buyer/support", icon: MessageSquare },
   { label: "Profile", href: "/buyer/profile", icon: User },
 ];
 
@@ -125,10 +150,10 @@ export function DashboardLayout({
                 href={item.href}
                 className={`flex items-center ${
                   collapsed ? "justify-center" : "gap-3"
-                } px-4 py-2 rounded-lg text-sm transition ${
+                } px-4 py-2 rounded-lg text-sm transition-all ${
                   active
-                    ? "bg-blue-50 text-blue-700 font-medium"
-                    : "text-gray-700 hover:bg-gray-100"
+                    ? "bg-gradient-to-r from-[#3B82F6] to-[#0a1c4f] text-white shadow-sm scale-[1.01]"
+                    : "text-gray-700 hover:bg-gray-100 hover:scale-[1.01]"
                 }`}
               >
                 <Icon className="w-5 h-5" />

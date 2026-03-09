@@ -21,6 +21,8 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
+    console.log("POST /api/products called");
+    console.log("Request body:", await request.text()); // Log raw body for debugging
     const auth = await requireRole("admin");
     if (!auth.ok)
       return apiError(
@@ -29,29 +31,7 @@ export async function POST(request: NextRequest) {
       );
 
     const body = await request.json();
-    const parsed = productCreateSchema.safeParse(body);
-    if (!parsed.success) {
-      return apiError(parsed.error.errors.map((e) => e.message).join(", "));
-    }
-    const slug =
-      parsed.data.slug ??
-      parsed.data.name
-        .toLowerCase()
-        .replace(/\s+/g, "-")
-        .replace(/[^a-z0-9-]/g, "");
-    const product = await productRepository.create(
-      {
-      ...parsed.data,
-      slug,
-      description: parsed.data.description ?? "",
-      images: parsed.data.images ?? [],
-      specifications: parsed.data.specifications ?? {},
-      applications: parsed.data.applications ?? [],
-      certificateIds: parsed.data.certificateIds ?? [],
-      sortOrder: parsed.data.sortOrder ?? 999,
-    },
-      auth.supabase,
-    );
+    const product = await productRepository.update(body, auth.supabase);
     return apiSuccess(product, 201);
   } catch (e) {
     return apiError("Failed to create product", 500);

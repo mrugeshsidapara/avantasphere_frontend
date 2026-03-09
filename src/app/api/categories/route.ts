@@ -16,11 +16,7 @@ export async function GET() {
 export async function POST(request: NextRequest) {
   try {
     const auth = await requireRole("admin");
-    if (!auth.ok)
-      return apiError(
-        auth.status === 401 ? "Unauthorized" : "Forbidden",
-        auth.status,
-      );
+    if (!auth.ok) return apiError(auth.status === 401 ? "Unauthorized" : "Forbidden", auth.status);
 
     const body = await request.json();
     const parsed = categoryCreateSchema.safeParse(body);

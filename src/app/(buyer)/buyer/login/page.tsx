@@ -4,15 +4,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { api } from "@/lib/api/client";
-
-interface LoginResponse {
-  user: {
-    id: string;
-    email: string;
-    role: "admin" | "buyer";
-    name?: string;
-  };
-}
+import { LoginApiResponse } from "@/lib/types";
 
 const BUYER_FEATURES = [
   { icon: "📊", label: "Dashboard", desc: "View activities & stats" },
@@ -42,21 +34,26 @@ export default function BuyerLoginPage() {
     setLoading(true);
 
     try {
-      const { data, error: err } = await api.post<LoginResponse>(
-        "/api/auth/login",
-        {
-          identifier,
-          password,
-        },
-      );
+      const response = await api.post<LoginApiResponse>("/api/auth/login", {
+        identifier,
+        password,
+      });
 
-      if (err) {
-        setError(err || "Login failed. Please try again.");
+      if (response.error) {
+        setError(response.error);
         setLoading(false);
         return;
       }
 
-      if (data?.user?.role === "buyer") {
+      const user = response.data?.user;
+
+      if (!user) {
+        setError("Login failed");
+        setLoading(false);
+        return;
+      }
+
+      if (user.role === "buyer") {
         setTimeout(() => {
           router.push("/buyer/dashboard");
         }, 300);

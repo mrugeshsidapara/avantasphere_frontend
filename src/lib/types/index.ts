@@ -1,4 +1,13 @@
 // Core entity types - compatible with static data and future Prisma models
+export interface LoginApiResponse {
+  user: {
+    id: string;
+    email: string;
+    role: "admin" | "buyer";
+    username?: string;
+    name?: string;
+  };
+}
 
 export interface Category {
   id: string;
@@ -11,17 +20,75 @@ export interface Category {
   sortOrder: number;
 }
 
-export interface Product {
+export interface CategoryRpcRow {
   id: string;
-  categoryId: string;
   name: string;
   slug: string;
-  description: string;
-  images: string[];
-  specifications: Record<string, string>;
-  applications?: string[];
-  certificateIds?: string[];
-  sortOrder: number;
+  description: string | null;
+  image: string | null;
+  product_count: number | null;
+  subcategories: string[] | null;
+  sort_order: number | null;
+}
+
+export interface Product {
+  id: string;
+
+  categoryId: string;
+  manufacturerId?: string;
+
+  name: string;
+  slug: string;
+  description?: string;
+
+  material?: string;
+  finish?: string;
+  polish?: boolean;
+  certification?: string;
+
+  length?: number;
+  width?: number;
+  height?: number;
+  weight?: number;
+
+  color?: string;
+  grade?: string;
+
+  hsCode?: string;
+  packagingType?: string;
+  moq?: number;
+  containerCapacity?: number;
+
+  isVisible?: boolean;
+  isFeatured?: boolean;
+
+  sortOrder?: number;
+
+  images?: ProductImage[];
+  specifications?: ProductSpecification[];
+  pricing?: ProductPricing[];
+}
+
+export interface ProductImage {
+  id?: string;
+  imageUrl: string;
+  sortOrder?: number;
+}
+
+export interface ProductSpecification {
+  id?: string;
+  specName: string;
+  specValue: string;
+}
+
+export interface ProductPricing {
+  id?: string;
+  manufacturerId?: string;
+  costPrice?: number;
+  logisticsCost?: number;
+  landingCost?: number;
+  salePrice?: number;
+  currency?: string;
 }
 
 export interface Certificate {

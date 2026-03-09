@@ -1,17 +1,22 @@
-@import './fonts.css';
-@import './tailwind.css';
-@import './theme.css';
+@import "./fonts.css";
+@import "./tailwind.css";
+@import "./theme.css";
 
 html {
   scroll-behavior: smooth;
 }
 
 body {
-  font-family: 'Inter', sans-serif;
+  font-family: "Inter", sans-serif;
 }
 
-h1, h2, h3, h4, h5, h6 {
-  font-family: 'General Sans', sans-serif;
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: "General Sans", sans-serif;
 }
 
 ::-webkit-scrollbar {
@@ -23,16 +28,16 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #3B82F6;
+  background: linear-gradient(to right, var(--primary-from), var(--primary-to));
   border-radius: 5px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #2563EB;
+  background: linear-gradient(to right, var(--primary-from), var(--primary-to));
 }
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
-@import url('https://api.fonts.coollabs.io/css2?family=General+Sans:wght@400;500;600;700&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap");
+@import url("https://api.fonts.coollabs.io/css2?family=General+Sans:wght@400;500;600;700&display=swap");
 
 * {
   margin: 0;
@@ -41,6 +46,14 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 :root {
-  --primary: #3B82F6;
-  --dark: #0B1F3F;
+  --primary-from: #3b82f6;
+  --primary-to: #0c1951;
+  --dark: #0b1f3f;
+}
+.form-label {
+  @apply block text-sm font-medium text-gray-700 mb-1;
+}
+
+.form-input {
+  @apply w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 outline-none;
 }

@@ -143,7 +143,7 @@ export default function ExportProductsPageClient({
                     {/* CTA */}
                     <div className="mt-auto">
                       <Link href={`/products/${product.id}`}>
-                        <button className="w-full px-5 py-3 bg-gradient-to-r from-[#3B82F6] to-[#0c1951] text-white rounded-xl font-semibold text-sm hover:scale-[1.02] transition-all duration-300">
+                        <button className="text-sm w-full px-5 py-3 bg-gradient-to-r from-[#3B82F6] to-[#0c1951] text-white rounded-xl font-semibold text-sm hover:scale-[1.02] transition-all duration-300">
                           View Details
                         </button>
                       </Link>
@@ -174,7 +174,7 @@ export default function ExportProductsPageClient({
               <p className="text-lg text-gray-600 mb-6">
                 We offer custom export solutions tailored to your needs
               </p>
-              <button className="px-10 py-4 bg-gradient-to-r from-[#3B82F6] to-[#0c1951] text-white rounded-xl font-semibold text-lg hover:scale-105 transition-all duration-300">
+              <button className="px-8 py-2 bg-gradient-to-r from-[#3B82F6] to-[#0c1951] text-white rounded-xl font-semibold text-lg hover:scale-105 transition-all duration-300">
                 Contact Us
               </button>
             </div>

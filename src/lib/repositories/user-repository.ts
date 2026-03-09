@@ -3,90 +3,87 @@ import type { AppUser } from "@/lib/types";
 import { getSupabaseBackendClient } from "@/lib/supabase/server";
 
 export interface AppUserUpsertPayload {
-  id: string; // auth.users.id
+  id: string;
   username: string;
   email: string;
-  role: "admin" | "buyer";
+  password_hash: string;
+  role: string;
 }
 
 export interface IUserRepository {
   findById(id: string, client?: SupabaseClient): Promise<AppUser | null>;
   findByEmail(email: string, client?: SupabaseClient): Promise<AppUser | null>;
-  findByUsername(
-    username: string,
-    client?: SupabaseClient,
-  ): Promise<AppUser | null>;
+  findByUsername(username: string, client?: SupabaseClient): Promise<AppUser | null>;
   upsert(data: AppUserUpsertPayload, client?: SupabaseClient): Promise<void>;
 }
 
 export class UserRepository implements IUserRepository {
-  private map(row: any): AppUser {
-    return {
-      id: row.id,
-      username: row.username,
-      email: row.email,
-      role: row.role,
-      createdAt: row.created_at,
-    };
-  }
-
   async findById(id: string, client?: SupabaseClient): Promise<AppUser | null> {
     const supabase = client ?? getSupabaseBackendClient();
     const { data, error } = await supabase
       .from("app_users")
-      .select("id, username, email, role, created_at")
+      .select("id,username,email,role,created_at")
       .eq("id", id)
-      .single();
-
-    if (error) return null;
-    return this.map(data);
+      .maybeSingle();
+    if (error) throw error;
+    if (!data) return null;
+    return {
+      id: data.id,
+      username: data.username,
+      email: data.email,
+      role: data.role,
+      createdAt: data.created_at,
+    };
   }
 
-  async findByEmail(
-    email: string,
-    client?: SupabaseClient,
-  ): Promise<AppUser | null> {
+  async findByEmail(email: string, client?: SupabaseClient): Promise<AppUser | null> {
     const supabase = client ?? getSupabaseBackendClient();
     const { data, error } = await supabase
       .from("app_users")
-      .select("id, username, email, role, created_at")
+      .select("id,username,email,role,created_at")
       .eq("email", email)
-      .single();
-
-    if (error) return null;
-    return this.map(data);
+      .maybeSingle();
+    if (error) throw error;
+    if (!data) return null;
+    return {
+      id: data.id,
+      username: data.username,
+      email: data.email,
+      role: data.role,
+      createdAt: data.created_at,
+    };
   }
 
-  async findByUsername(
-    username: string,
-    client?: SupabaseClient,
-  ): Promise<AppUser | null> {
+  async findByUsername(username: string, client?: SupabaseClient): Promise<AppUser | null> {
     const supabase = client ?? getSupabaseBackendClient();
     const { data, error } = await supabase
       .from("app_users")
-      .select("id, username, email, role, created_at")
+      .select("id,username,email,role,created_at")
       .eq("username", username)
-      .single();
-
-    if (error) return null;
-    return this.map(data);
+      .maybeSingle();
+    if (error) throw error;
+    if (!data) return null;
+    return {
+      id: data.id,
+      username: data.username,
+      email: data.email,
+      role: data.role,
+      createdAt: data.created_at,
+    };
   }
 
-  async upsert(
-    data: AppUserUpsertPayload,
-    client?: SupabaseClient,
-  ): Promise<void> {
+  async upsert(data: AppUserUpsertPayload, client?: SupabaseClient): Promise<void> {
     const supabase = client ?? getSupabaseBackendClient();
     const { error } = await supabase.from("app_users").upsert(
       {
         id: data.id,
         username: data.username,
         email: data.email,
+        password_hash: data.password_hash,
         role: data.role,
       },
       { onConflict: "id" },
     );
-
     if (error) throw error;
   }
 }

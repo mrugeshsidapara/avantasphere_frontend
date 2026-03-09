@@ -28,15 +28,17 @@ export async function POST(request: NextRequest) {
     const ext = path.extname(file.name) || ".jpg";
     const baseName = formData.get("name")?.toString() ?? `${Date.now()}${ext}`;
     const fileName = baseName.endsWith(ext) ? baseName : `${baseName}${ext}`;
-
+    console.log("Uploading file:", fileName, "to type:", type);
     const uploadDir = path.join(process.cwd(), "public", "uploads", type);
     await mkdir(uploadDir, { recursive: true });
     const filePath = path.join(uploadDir, fileName);
     await writeFile(filePath, buffer);
 
     const url = `${UPLOADS_PUBLIC_BASE}/${type}/${fileName}`;
+    console.log("File uploaded successfully:", url);
     return apiSuccess({ url, path: url }, 201);
   } catch (e) {
+    console.error("Upload failed:", e);
     return apiError("Upload failed", 500);
   }
 }

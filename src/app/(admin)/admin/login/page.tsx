@@ -18,18 +18,7 @@ import {
   UserCog,
 } from "lucide-react";
 import { api } from "@/lib/api/client";
-
-interface LoginResponse {
-  success: boolean;
-  data: {
-    user: {
-      id: string;
-      email: string;
-      role: "admin" | "buyer";
-      username?: string;
-    };
-  };
-}
+import { LoginApiResponse } from "@/lib/types";
 
 const ADMIN_FEATURES = [
   { icon: LayoutDashboard, label: "Dashboard" },
@@ -59,7 +48,7 @@ export default function AdminLoginPage() {
     setLoading(true);
     setError("");
 
-    const response = await api.post("/api/auth/login", {
+    const response = await api.post<LoginApiResponse>("/api/auth/login", {
       identifier,
       password,
     });
@@ -69,8 +58,16 @@ export default function AdminLoginPage() {
       setLoading(false);
       return;
     }
+    debugger;
     const user = response.data?.user;
-    if (user?.role === "admin") {
+
+    if (!user) {
+      setError("Login failed");
+      setLoading(false);
+      return;
+    }
+
+    if (user.role === "admin") {
       router.push("/admin");
     } else {
       setError("Unauthorized account type");

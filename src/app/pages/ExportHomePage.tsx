@@ -73,13 +73,13 @@ export function ExportHomePage() {
 
                 <div className="flex flex-wrap gap-4">
                   <Link href="/request-quote">
-                    <button className="px-5 py-2 bg-gradient-to-r from-[#3B82F6] to-[#0c1951] text-white rounded-xl font-semibold text-lg hover:shadow-2xl hover:scale-[1.02] transition-all">
+                    <button className="text-sm px-5 py-2 bg-gradient-to-r from-[#3B82F6] to-[#0c1951] text-white rounded-xl font-semibold text-lg hover:shadow-2xl hover:scale-[1.02] transition-all">
                       Request a Quote
                     </button>
                   </Link>
 
                   <Link href="/products">
-                    <button className="px-5 py-2 border border-[#0a1c4f] text-[#0a1c4f] rounded-xl font-semibold hover:bg-gradient-to-r hover:from-[#3B82F6] hover:to-[#0a1c4f] hover:text-white transition-all">
+                    <button className="text-sm px-5 py-2 border border-[#0a1c4f] text-[#0a1c4f] rounded-xl font-semibold hover:bg-gradient-to-r hover:from-[#3B82F6] hover:to-[#0a1c4f] hover:text-white transition-all">
                       View Products
                     </button>
                   </Link>
@@ -179,7 +179,7 @@ export function ExportHomePage() {
           {!catLoading && categories.length > 0 && (
             <div className="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
               {categories.map((cat: any, index: number) => (
-                <Link key={cat.id} href={`/categories/${cat.slug ?? cat.id}`}>
+                <Link key={cat.id} href={`/categories/${cat.id}`}>
                   <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     whileInView={{ opacity: 1, y: 0 }}
@@ -224,7 +224,7 @@ export function ExportHomePage() {
                 key={i}
                 className="backdrop-blur-xl bg-white/60 border border-white/50 rounded-2xl p-8"
               >
-                <f.icon className="w-10 h-10 text-blue-600 mb-4" />
+                <f.icon className="w-10 h-10 text-[#0c1951] mb-4" />
                 <h3 className="text-xl font-bold text-[#0B1F3F] mb-2">
                   {f.title}
                 </h3>
@@ -246,7 +246,7 @@ export function ExportHomePage() {
 
             <div className="flex justify-center gap-4 flex-wrap">
               <Link href="/request-quote">
-                <button className="px-8 py-2 bg-gradient-to-r from-[#3B82F6] to-[#0c1951] text-white rounded-xl font-semibold text-lg">
+                <button className="text-sm px-8 py-2 bg-gradient-to-r from-[#3B82F6] to-[#0c1951] text-white rounded-xl font-semibold text-lg">
                   Request a Quote
                 </button>
               </Link>

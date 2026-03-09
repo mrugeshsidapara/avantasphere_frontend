@@ -1,5 +1,5 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
-import type { Category } from "@/lib/types";
+import type { Category, CategoryRpcRow } from "@/lib/types";
 import { getSupabaseBackendClient } from "@/lib/supabase/server";
 
 export interface ICategoryRepository {
@@ -21,14 +21,11 @@ export interface ICategoryRepository {
 export class CategoryRepository implements ICategoryRepository {
   async findAll(): Promise<Category[]> {
     const supabase = getSupabaseBackendClient();
-    const { data, error } = await supabase
-      .from("categories")
-      .select(
-        "id,name,slug,description,image,product_count,subcategories,sort_order",
-      )
-      .order("sort_order", { ascending: true });
+    const { data, error } = await supabase.rpc(
+      "get_categories_with_product_count",
+    );
     if (error) throw error;
-    return (data ?? []).map((c) => ({
+    return (data ?? []).map((c: CategoryRpcRow) => ({
       id: c.id,
       name: c.name,
       slug: c.slug,
@@ -90,7 +87,6 @@ export class CategoryRepository implements ICategoryRepository {
     input: Omit<Category, "id">,
     client?: SupabaseClient,
   ): Promise<Category> {
-    console.log("Creating category with input:", input);
     const supabase = client ?? getSupabaseBackendClient();
     const { data, error } = await supabase
       .from("categories")

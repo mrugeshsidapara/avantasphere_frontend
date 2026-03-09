@@ -26,12 +26,22 @@ export interface ICertificateRepository {
   findAll(): Promise<Certificate[]>;
   findVisible(): Promise<Certificate[]>;
   findById(id: string): Promise<Certificate | null>;
-  update(id: string, data: Partial<Certificate>, client?: SupabaseClient): Promise<Certificate | null>;
+  create(data: Omit<Certificate, "id">, client?: SupabaseClient): Promise<Certificate>;
+  update(
+    id: string,
+    data: Partial<Certificate>,
+    client?: SupabaseClient,
+  ): Promise<Certificate | null>;
+  delete(id: string, client?: SupabaseClient): Promise<boolean>;
 }
 
 export class CertificateRepository implements ICertificateRepository {
+  private backend() {
+    return getSupabaseBackendClient();
+  }
+
   async findAll(): Promise<Certificate[]> {
-    const supabase = getSupabaseBackendClient();
+    const supabase = this.backend();
     const { data, error } = await supabase
       .from("certificates")
       .select("id,name,description,document_url,is_public,sort_order")
@@ -41,7 +51,7 @@ export class CertificateRepository implements ICertificateRepository {
   }
 
   async findVisible(): Promise<Certificate[]> {
-    const supabase = getSupabaseBackendClient();
+    const supabase = this.backend();
     const { data, error } = await supabase
       .from("certificates")
       .select("id,name,description,document_url,is_public,sort_order")
@@ -52,7 +62,7 @@ export class CertificateRepository implements ICertificateRepository {
   }
 
   async findById(id: string): Promise<Certificate | null> {
-    const supabase = getSupabaseBackendClient();
+    const supabase = this.backend();
     const { data, error } = await supabase
       .from("certificates")
       .select("id,name,description,document_url,is_public,sort_order")
@@ -63,12 +73,32 @@ export class CertificateRepository implements ICertificateRepository {
     return mapRow(data as CertRow);
   }
 
+  async create(
+    input: Omit<Certificate, "id">,
+    client?: SupabaseClient,
+  ): Promise<Certificate> {
+    const supabase = client ?? this.backend();
+    const { data, error } = await supabase
+      .from("certificates")
+      .insert({
+        name: input.name,
+        description: input.description ?? "",
+        document_url: input.image ?? null,
+        is_public: input.visible ?? true,
+        sort_order: input.sortOrder ?? 999,
+      })
+      .select("id,name,description,document_url,is_public,sort_order")
+      .single();
+    if (error) throw error;
+    return mapRow(data as CertRow);
+  }
+
   async update(
     id: string,
     input: Partial<Certificate>,
     client?: SupabaseClient,
   ): Promise<Certificate | null> {
-    const supabase = client ?? getSupabaseBackendClient();
+    const supabase = client ?? this.backend();
     const patch: Record<string, unknown> = {};
     if (input.name !== undefined) patch.name = input.name;
     if (input.description !== undefined) patch.description = input.description;
@@ -84,6 +114,13 @@ export class CertificateRepository implements ICertificateRepository {
     if (error) throw error;
     if (!data) return null;
     return mapRow(data as CertRow);
+  }
+
+  async delete(id: string, client?: SupabaseClient): Promise<boolean> {
+    const supabase = client ?? this.backend();
+    const { error } = await supabase.from("certificates").delete().eq("id", id);
+    if (error) throw error;
+    return true;
   }
 }
 

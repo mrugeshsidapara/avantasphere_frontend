@@ -7,6 +7,7 @@ import { GlassNavbar } from "@/app/components/GlassNavbar";
 import { GlassFooter } from "@/app/components/GlassFooter";
 import { ShoppingCart, Package, Truck, Settings } from "lucide-react";
 import { useProduct } from "@/lib/hooks/use-api";
+import { Product, ProductImage } from "@/lib/types";
 
 const PLACEHOLDER_IMG =
   "https://images.unsplash.com/photo-1611224111800-0eaf3e53aa45?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800";
@@ -18,32 +19,9 @@ export function ProductDetailPage() {
   const [selectedImage, setSelectedImage] = useState(0);
   const [activeTab, setActiveTab] = useState("description");
 
-  const { data: productData, error, loading } = useProduct(productId || null);
-  const raw = productData as {
-    id?: string;
-    name?: string;
-    description?: string;
-    images?: string[];
-    specifications?: Record<string, string>;
-    applications?: string[];
-  } | null;
+  const { data, loading, error } = useProduct(productId || null);
 
-  const images = raw?.images?.length ? raw.images : [PLACEHOLDER_IMG];
-  const specs = raw?.specifications ?? {};
-  const product = {
-    id: raw?.id ?? productId,
-    name: raw?.name ?? "Product",
-    description: raw?.description ?? "",
-    images,
-    material: specs.material ?? "-",
-    finish: specs.finish ?? "-",
-    size: specs.size ?? "-",
-    moq: specs.moq ?? "-",
-    hsCode: specs.hsCode ?? "-",
-    packaging: specs.packaging ?? "-",
-    shipping: specs.shipping ?? "-",
-    applications: raw?.applications ?? [],
-  };
+  const product = data as Product;
 
   const tabs = [
     {
@@ -62,7 +40,7 @@ export function ProductDetailPage() {
               <h3 className="font-semibold text-[#0B1F3F] mb-4 flex items-center gap-2">
                 🏭 Applications
               </h3>
-              <div className="grid grid-cols-2 gap-3 text-sm text-gray-700">
+              {/* <div className="grid grid-cols-2 gap-3 text-sm text-gray-700">
                 {(product.applications.length
                   ? product.applications
                   : [
@@ -76,7 +54,7 @@ export function ProductDetailPage() {
                 ).map((a, i) => (
                   <div key={i}>• {a}</div>
                 ))}
-              </div>
+              </div> */}
             </div>
 
             {/* KEY BENEFITS */}
@@ -324,7 +302,7 @@ export function ProductDetailPage() {
     );
   }
 
-  if (error || !raw) {
+  if (error || !product) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-[#E0F2FE] via-white to-[#F0F9FF]">
         <GlassNavbar />
@@ -360,9 +338,7 @@ export function ProductDetailPage() {
               <div className="backdrop-blur-xl bg-white/60 border border-white/50 rounded-3xl p-6 mb-6 shadow-2xl">
                 <img
                   src={
-                    product.images[selectedImage]?.startsWith("http")
-                      ? product.images[selectedImage]
-                      : product.images[selectedImage] || PLACEHOLDER_IMG
+                    product.images?.[selectedImage]?.imageUrl || PLACEHOLDER_IMG
                   }
                   alt={product.name}
                   className="w-full h-[500px] object-cover rounded-2xl"
@@ -374,9 +350,9 @@ export function ProductDetailPage() {
 
               {/* Thumbnail Gallery */}
               <div className="grid grid-cols-4 gap-4">
-                {product.images.map((image, index) => (
+                {product.images?.map((image, index) => (
                   <button
-                    key={index}
+                    key={image.id ?? index}
                     onClick={() => setSelectedImage(index)}
                     className={`backdrop-blur-xl border rounded-2xl p-2 transition-all duration-300 ${
                       selectedImage === index
@@ -385,11 +361,7 @@ export function ProductDetailPage() {
                     }`}
                   >
                     <img
-                      src={
-                        image?.startsWith("http")
-                          ? image
-                          : image || PLACEHOLDER_IMG
-                      }
+                      src={image?.imageUrl || PLACEHOLDER_IMG}
                       alt={`${product.name} ${index + 1}`}
                       className="w-full h-20 object-cover rounded-xl"
                       onError={(e) => {
@@ -417,11 +389,11 @@ export function ProductDetailPage() {
                 {[
                   { label: "Material", value: product.material },
                   { label: "Finish", value: product.finish },
-                  { label: "Size", value: product.size },
+                  // { label: "Size", value: product.size },
                   { label: "MOQ", value: product.moq },
                   { label: "HS Code", value: product.hsCode },
-                  { label: "Packaging", value: product.packaging },
-                  { label: "Shipping", value: product.shipping },
+                  //{ label: "Packaging", value: product.packaging },
+                  //{ label: "Shipping", value: product.shipping },
                 ].map((spec, index) => (
                   <div
                     key={index}

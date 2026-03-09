@@ -2,22 +2,23 @@
 
 import { useState, useEffect } from "react";
 import { api } from "@/lib/api/client";
-import { Category } from "../types";
+import { Category, Certificate } from "../types";
 
 export function useCategories() {
-  const [data, setData] = useState<Category[]>([]);
+  const [data, setData] =
+    useState<Awaited<ReturnType<typeof api.get>>["data"]>(null);
+  const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch("/api/categories")
-      .then((res) => res.json())
-      .then((res) => {
-        setData(res.data || []);
-        setLoading(false);
-      });
+    api.get<Category[]>("/api/categories").then(({ data: d, error: e }) => {
+      setData(d ?? null);
+      setError(e ?? null);
+      setLoading(false);
+    });
   }, []);
 
-  return { data, loading };
+  return { data, error, loading };
 }
 
 export function useCategory(id: string | null) {
@@ -80,6 +81,23 @@ export function useProduct(id: string | null) {
       setLoading(false);
     });
   }, [id]);
+
+  return { data, error, loading };
+}
+
+export function useCertificates() {
+  const [data, setData] =
+    useState<Awaited<ReturnType<typeof api.get>>["data"]>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    api.get<Certificate[]>("/api/certificates").then(({ data: d, error: e }) => {
+      setData(d ?? null);
+      setError(e ?? null);
+      setLoading(false);
+    });
+  }, []);
 
   return { data, error, loading };
 }

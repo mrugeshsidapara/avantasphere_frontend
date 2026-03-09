@@ -2,6 +2,7 @@
 
 import { DashboardLayout } from "@/components/DashboardLayout";
 import { useState } from "react";
+import { Plus, Search, Pencil } from "lucide-react";
 
 export default function TrackingPage() {
   const [shipments] = useState([
@@ -30,50 +31,106 @@ export default function TrackingPage() {
 
   return (
     <DashboardLayout role="admin" currentPage="Tracking">
-      <div className="p-4 md:p-8 bg-gradient-to-br from-blue-50 to-blue-100 min-h-screen">
-        <div className="mb-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+      <div className="p-6 md:p-8 space-y-6">
+        {/* Header */}
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
           <div>
-            <h1 className="text-4xl md:text-5xl font-bold text-blue-900 mb-2">
-              🚚 Tracking Updates
+            <h1 className="text-3xl font-bold text-gray-900">
+              Shipment Tracking
             </h1>
-            <p className="text-lg text-blue-700">
-              Update shipment tracking information
-            </p>
+
+            <p className="text-gray-500">Manage shipment tracking updates</p>
           </div>
-          <button className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold transition-colors whitespace-nowrap">
-            + New Shipment
+
+          <button className="flex items-center gap-2 px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg">
+            <Plus size={18} />
+            New Shipment
           </button>
         </div>
 
+        {/* Stats */}
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+          <div className="bg-white border rounded-xl shadow-sm p-5">
+            <p className="text-sm text-gray-500">Total Shipments</p>
+            <h3 className="text-2xl font-bold text-gray-900">
+              {shipments.length}
+            </h3>
+          </div>
+
+          <div className="bg-white border rounded-xl shadow-sm p-5">
+            <p className="text-sm text-gray-500">Delivered</p>
+            <h3 className="text-2xl font-bold text-green-600">
+              {shipments.filter((s) => s.status === "Delivered").length}
+            </h3>
+          </div>
+
+          <div className="bg-white border rounded-xl shadow-sm p-5">
+            <p className="text-sm text-gray-500">In Transit</p>
+            <h3 className="text-2xl font-bold text-blue-600">
+              {shipments.filter((s) => s.status === "In Transit").length}
+            </h3>
+          </div>
+
+          <div className="bg-white border rounded-xl shadow-sm p-5">
+            <p className="text-sm text-gray-500">Processing</p>
+            <h3 className="text-2xl font-bold text-yellow-600">
+              {shipments.filter((s) => s.status === "Processing").length}
+            </h3>
+          </div>
+        </div>
+
+        {/* Search */}
+        <div className="bg-white border rounded-xl shadow-sm p-4">
+          <div className="relative max-w-md">
+            <Search
+              size={18}
+              className="absolute left-3 top-2.5 text-gray-400"
+            />
+
+            <input
+              type="text"
+              placeholder="Search shipments..."
+              className="w-full pl-10 pr-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+            />
+          </div>
+        </div>
+
         {/* Desktop Table */}
-        <div className="hidden md:block bg-white rounded-lg shadow-md overflow-hidden">
+        <div className="hidden md:block bg-white border rounded-xl shadow-sm overflow-hidden">
           <table className="w-full">
-            <thead className="bg-blue-600 text-white">
+            <thead className="bg-gray-50 text-gray-600 text-sm border-b">
               <tr>
                 <th className="px-6 py-4 text-left font-semibold">
                   Shipment ID
                 </th>
-                <th className="px-6 py-4 text-left font-semibold">Order ID</th>
+
+                <th className="px-6 py-4 text-left font-semibold">Order</th>
+
                 <th className="px-6 py-4 text-left font-semibold">Carrier</th>
+
                 <th className="px-6 py-4 text-left font-semibold">Status</th>
+
                 <th className="px-6 py-4 text-left font-semibold">ETA</th>
-                <th className="px-6 py-4 text-left font-semibold">Actions</th>
+
+                <th className="px-6 py-4 text-right font-semibold">Actions</th>
               </tr>
             </thead>
+
             <tbody className="divide-y">
               {shipments.map((ship) => (
-                <tr
-                  key={ship.id}
-                  className="hover:bg-blue-50 transition-colors"
-                >
-                  <td className="px-6 py-4 font-semibold text-gray-900">
+                <tr key={ship.id} className="hover:bg-gray-50 transition">
+                  <td className="px-6 py-4 font-medium text-gray-900">
                     {ship.id}
                   </td>
-                  <td className="px-6 py-4 text-gray-700">{ship.order}</td>
-                  <td className="px-6 py-4 text-gray-700">{ship.carrier}</td>
+
+                  <td className="px-6 py-4 text-gray-600">{ship.order}</td>
+
+                  <td className="px-6 py-4 text-gray-600">{ship.carrier}</td>
+
                   <td className="px-6 py-4">
                     <span
-                      className={`px-3 py-1 rounded-full text-sm font-semibold ${
+                      className={`px-3 py-1 rounded-full text-xs font-medium
+                      ${
                         ship.status === "Delivered"
                           ? "bg-green-100 text-green-700"
                           : ship.status === "In Transit"
@@ -84,10 +141,12 @@ export default function TrackingPage() {
                       {ship.status}
                     </span>
                   </td>
-                  <td className="px-6 py-4 text-gray-700">{ship.eta}</td>
-                  <td className="px-6 py-4">
-                    <button className="px-3 py-1 bg-blue-500 hover:bg-blue-600 text-white rounded transition-colors text-sm">
-                      ✎ Update
+
+                  <td className="px-6 py-4 text-gray-600">{ship.eta}</td>
+
+                  <td className="px-6 py-4 flex justify-end">
+                    <button className="p-2 rounded-lg hover:bg-blue-50 text-blue-600">
+                      <Pencil size={16} />
                     </button>
                   </td>
                 </tr>
@@ -101,12 +160,14 @@ export default function TrackingPage() {
           {shipments.map((ship) => (
             <div
               key={ship.id}
-              className="bg-white rounded-lg shadow-md p-4 border-l-4 border-blue-500"
+              className="bg-white rounded-xl border shadow-sm p-4"
             >
               <div className="flex justify-between items-start mb-2">
-                <h3 className="font-bold text-lg text-gray-900">{ship.id}</h3>
+                <h3 className="font-semibold text-gray-900">{ship.id}</h3>
+
                 <span
-                  className={`px-2 py-1 rounded text-xs font-semibold ${
+                  className={`px-2 py-1 text-xs rounded-full
+                  ${
                     ship.status === "Delivered"
                       ? "bg-green-100 text-green-700"
                       : ship.status === "In Transit"
@@ -117,13 +178,16 @@ export default function TrackingPage() {
                   {ship.status}
                 </span>
               </div>
-              <div className="space-y-1 text-sm text-gray-600 mb-3">
-                <p>📦 Order: {ship.order}</p>
-                <p>🚚 Carrier: {ship.carrier}</p>
-                <p>📅 ETA: {ship.eta}</p>
-              </div>
-              <button className="w-full px-3 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded transition-colors font-semibold text-sm">
-                ✎ Update
+
+              <p className="text-sm text-gray-600">Order: {ship.order}</p>
+
+              <p className="text-sm text-gray-600">Carrier: {ship.carrier}</p>
+
+              <p className="text-sm text-gray-500 mb-3">ETA: {ship.eta}</p>
+
+              <button className="w-full flex items-center justify-center gap-2 bg-blue-600 text-white py-2 rounded-lg text-sm">
+                <Pencil size={16} />
+                Update Tracking
               </button>
             </div>
           ))}

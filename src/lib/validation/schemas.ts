@@ -36,6 +36,14 @@ export const certificateUpdateSchema = z.object({
   sortOrder: z.number().optional(),
 });
 
+export const certificateCreateSchema = z.object({
+  name: z.string().min(1, "Name is required"),
+  description: z.string().optional(),
+  image: z.string().optional(),
+  visible: z.boolean().optional(),
+  sortOrder: z.number().optional(),
+});
+
 export const homepageSectionUpdateSchema = z.object({
   enabled: z.boolean(),
   sortOrder: z.number().optional(),
